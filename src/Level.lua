@@ -23,15 +23,28 @@ Initialisation
 local Level = Class
 {
   -- constructor
-  init = function(self, mapfile)
-    self.collisiongrid = CollisionGrid(mapfile)
+  init = function(self, levelfile)
+  
+    -- load collision-grid
+    self.collisiongrid = CollisionGrid(levelfile)
     GameObject.COLLISIONGRID = self.collisiongrid
     
+    -- point camera at centre of collision-grid
     self.camera = Camera(0, 0)
     self.camera:lookAt(self.collisiongrid:centrePixel())
     self.camera:zoom(scaling.SCALE_MAX)
     
-    self.player = Player(100, 100) -- FIXME create based on map
+    -- parse objects from levelfile
+    for _, layer in ipairs(levelfile.layers) do
+      --! GENERATE *COLLISION* GRID
+      if layer.type == "objectgroup" then
+        if layer.name == "player" then
+          for i, object in ipairs(layer.objects) do
+            self.player = Player(object.x, object.y)
+          end
+        end
+      end
+    end
   end,
 }
   

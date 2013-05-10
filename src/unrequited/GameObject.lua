@@ -250,8 +250,8 @@ function GameObject:update(dt)
   if math.abs(self.dx) < 0.01 then self.dx = 0 end
   if math.abs(self.dy) < 0.01 then self.dy = 0 end
   
-  
-  if self.COLLISIONGRID then
+  if GameObject.COLLISIONGRID then
+    local collisiongrid = GameObject.COLLISIONGRID
     -- check if we're on the ground
     self.airborne = 
       ((not collisiongrid:pixelCollision(self.x, self.y + self.h + 1, collide_type)
@@ -310,9 +310,9 @@ end
 GameObject.DEBUG_VIEW = 
 {
   draw = function(self, target)
-    scaling:rectangle("line", 
+    love.graphics.rectangle("line", 
         target.x, target.y, target.w, target.h)
-    scaling:print(target.name, 
+    love.graphics.print(target.name, 
         target.x, target.y+32)
   end
 }

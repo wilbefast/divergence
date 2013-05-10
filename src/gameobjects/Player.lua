@@ -34,8 +34,18 @@ function Player:update(dt)
   
   GameObject.update(self, dt)
   
-  local dx, dy = input.x, input.y
-  self.x, self.y = self.x + dx*dt*self.speed, self.y + dy*dt*self.speed
+  if math.abs(input.x) ~= 0 then
+    self.dx = input.x*self.speed
+  elseif math.floor(self.x) % GameObject.COLLISIONGRID.tilew == 0 then
+    self.dx = 0
+  end
+  
+  if math.abs(input.y) ~= 0 then
+    self.dy = input.y*self.speed
+  elseif math.floor(self.y) % GameObject.COLLISIONGRID.tileh == 0 then
+    self.dy = 0
+  end
+  
 end
 
 

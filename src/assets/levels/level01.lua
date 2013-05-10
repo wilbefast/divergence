@@ -61,6 +61,26 @@ return {
           properties = {}
         }
       }
+    },
+    {
+      type = "objectgroup",
+      name = "player",
+      visible = true,
+      opacity = 1,
+      properties = {},
+      objects = {
+        {
+          name = "",
+          type = "",
+          shape = "rectangle",
+          x = 192,
+          y = 224,
+          width = 32,
+          height = 32,
+          visible = true,
+          properties = {}
+        }
+      }
     }
   }
 }
