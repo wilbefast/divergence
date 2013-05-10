@@ -16,6 +16,10 @@ Lesser General Public License for more details.
 PLAYER GAMEOBJECT
 --]]------------------------------------------------------------
 
+--[[------------------------------------------------------------
+Initialisation
+--]]--
+
 local Player = Class
 {
   type = GameObject.TYPE.new("Player"),
@@ -24,33 +28,59 @@ local Player = Class
 
   init = function(self, x, y)
     GameObject.init(self, x, y, 32, 32)
+    self.targetX = x
+    self.targetY = y
   end,
 }
 Player:include(GameObject)
 
 
+--[[------------------------------------------------------------
+Game loop
+--]]--
 
 function Player:update(dt)
-  
+  -- default update
   GameObject.update(self, dt)
   
-  if math.abs(input.x) ~= 0 then
+  local grid = GameObject.COLLISIONGRID
+  
+  -- is the player snapped to this grid?
+  local isSnappedX = (math.floor(self.x) % grid.tilew == 0)
+  local isSnappedY = (math.floor(self.y) % grid.tileh == 0)
+    
+  -- move snapped to grid
+  -- ...horizontally
+  if (math.abs(input.x) ~= 0) 
+  and isSnappedY 
+  and (not grid:pixelCollision(self.x + input.x, self.y)) 
+  then
     self.dx = input.x*self.speed
-  elseif math.floor(self.x) % GameObject.COLLISIONGRID.tilew == 0 then
+    self.maxX = self.x 
+  elseif isSnappedX then
     self.dx = 0
   end
-  
-  if math.abs(input.y) ~= 0 then
+  -- ...vertically
+  if (math.abs(input.y) ~= 0) 
+  and isSnappedX 
+  and (not grid:pixelCollision(self.x, self.y + input.y))
+  then
     self.dy = input.y*self.speed
-  elseif math.floor(self.y) % GameObject.COLLISIONGRID.tileh == 0 then
+  elseif isSnappedY then
     self.dy = 0
   end
-  
+end
+
+function Player:draw()
+  if DEBUG then
+    GameObject.draw(self)
+  end
 end
 
 
 --[[------------------------------------------------------------
-Export
---]]
+EXPORT
+--]]------------------------------------------------------------
+
 
 return Player
