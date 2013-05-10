@@ -101,7 +101,7 @@ function CollisionGrid:draw(view)
   for x = start_x, end_x do
     for y = start_y, end_y do
       if self.tiles[x][y]:isWall()  then
-        love.graphics.rectangle("line", (x-1)*self.tilew,
+        love.graphics.rectangle("fill", (x-1)*self.tilew,
             (y-1)*self.tileh, self.tilew, self.tileh)
         love.graphics.setColor(255,255,255)
       end

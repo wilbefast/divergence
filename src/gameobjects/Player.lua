@@ -27,7 +27,7 @@ local Player = Class
   speed = 64,
 
   init = function(self, x, y)
-    GameObject.init(self, x, y, 32, 32)
+    GameObject.init(self, x, y, 30, 30)
     self.targetX = x
     self.targetY = y
   end,
@@ -54,10 +54,11 @@ function Player:update(dt)
   local overShotX 
     = ((self.targetX - self.x)*self.dx < 0)
   local collisionX 
-    = grid:collision(self, self.x + input.x, self.y)
+    = grid:collision(self, 
+        self.x + input.x*grid.tilew/2, self.y)
   -- starting moving
   if (math.abs(input.x) > 0) and (not collisionX) 
-  and (self.y == self.targetY) then
+  and (self.dy == 0) then
     if overShotX then
       local f = useful.tri(input.x > 0, 
                 useful.floor, useful.ceil)
@@ -65,13 +66,10 @@ function Player:update(dt)
                     + grid.tilew*input.x
     end
     self.dx = input.x * self.speed
+  -- stop at destination
   elseif overShotX then
     self.x = self.targetX
     self.dx = 0
-  end
-  -- stop at destination
-  if self.dx == 0 then
-    self.x = self.targetX
   end
 
   -- VERTICAL MOVEMENT
@@ -80,10 +78,11 @@ function Player:update(dt)
   local overShotY
     = ((self.targetY - self.y)*self.dy < 0)
   local collisionY 
-    = grid:collision(self, self.x, self.y + input.y)
+    = grid:collision(self, 
+        self.x, self.y + input.y*grid.tileh/2)
   -- starting moving
   if (math.abs(input.y) > 0) and (not collisionY)
-  and (self.x == self.targetX) then
+  and (self.dx == 0) then
     if overShotY then
       local f = useful.tri(input.y > 0, 
                 useful.floor, useful.ceil)
@@ -91,13 +90,10 @@ function Player:update(dt)
                     + grid.tileh*input.y
     end
     self.dy = input.y * self.speed
+  -- stop at destination
   elseif overShotY then
     self.y = self.targetY
     self.dy = 0
-  end
-  -- stop at destination
-  if self.dy == 0 then
-    self.y = self.targetY
   end
 end
 
@@ -106,8 +102,11 @@ function Player:draw()
     GameObject.draw(self)
   end
   
+  local grid = GameObject.COLLISIONGRID
+  local bink = grid:collision(self)
+  
   love.graphics.setColor(255, 0, 0)
-  love.graphics.rectangle("line", self.targetX, self.targetY, self.w, self.h)
+  love.graphics.rectangle(useful.tri(bink, "fill", "line"), self.targetX, self.targetY, self.w, self.h)
   love.graphics.setColor(255, 255, 255)
 end
 

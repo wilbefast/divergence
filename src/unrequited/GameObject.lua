@@ -250,7 +250,7 @@ function GameObject:update(dt)
   if math.abs(self.dx) < 0.01 then self.dx = 0 end
   if math.abs(self.dy) < 0.01 then self.dy = 0 end
   
-  if --[[ FIXME GameObject.COLLISIONGRID ]] false then
+  if GameObject.COLLISIONGRID then
     local collisiongrid = GameObject.COLLISIONGRID
     -- check if we're on the ground
     self.airborne = 
