@@ -18,23 +18,32 @@ IMPORTS
 
 GameState = require("hump/gamestate")
 Class = require("hump/class")
+Camera = require("hump/camera")
 
 useful = require("unrequited/useful")
 audio = require("unrequited/audio")
 scaling = require("unrequited/scaling")
+input = require("unrequited/input")
 GameObject = require("unrequited/GameObject")
+Tile = require("unrequited/Tile")
+CollisionGrid = require("unrequited/CollisionGrid")
 
-Ninja = require("gameobjects/Ninja")
+Player = require("gameobjects/Player")
+
+Level = require("Level")
 
 title = require("gamestates/title")
 game = require("gamestates/game")
+
+
+
 
 --[[------------------------------------------------------------
 GLOBAL SETTINGS
 --]]------------------------------------------------------------
 
 DEBUG = true
-audio.mute = false
+audio.mute = DEBUG
 
 --[[------------------------------------------------------------
 LOVE CALLBACKS
@@ -75,6 +84,8 @@ MIN_DT = 1/60
 MAX_DT = 1/30
 function love.update(dt)
   dt = math.max(MIN_DT, math.min(MAX_DT, dt))
+  
+  input:update(dt)
   GameState.update(dt)
 end
 

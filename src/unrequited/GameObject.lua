@@ -312,8 +312,8 @@ GameObject.DEBUG_VIEW =
   draw = function(self, target)
     scaling:rectangle("line", 
         target.x, target.y, target.w, target.h)
-    --scaling:print(target.name, 
-      --  target.x, target.y+32)
+    scaling:print(target.name, 
+        target.x, target.y+32)
   end
 }
 

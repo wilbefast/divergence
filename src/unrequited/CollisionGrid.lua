@@ -13,14 +13,6 @@ Lesser General Public License for more details.
 --]]
 
 --[[------------------------------------------------------------
-IMPORTS
---]]------------------------------------------------------------
-
-local Class = require("hump/class")
-local Tile = require("Tile")
-local useful = require("useful")
-
---[[------------------------------------------------------------
 COLLISIONGRID CLASS
 --]]------------------------------------------------------------
 
@@ -54,28 +46,15 @@ local CollisionGrid = Class
       
       --! GENERATE *COLLISION* GRID
       if layer.type == "objectgroup" then
-        local type
-        if layer.name == "murs" then
-          type = Tile.TYPE.WALL
-        elseif layer.name == "plateformes" then
-          type = Tile.TYPE.ONESIDED
-        end
-      
-        if type then
+        if layer.name == "walls" then
+
           function setType(tile) 
-            if (tile.type == Tile.TYPE.EMPTY) or (tile.type > type) then
-              tile.type = type
-            end
+              tile.type = Tile.TYPE.WALL
           end
           for i, object in ipairs(layer.objects) do
             local x, y = self:pixelToGrid(object.x, object.y)
             local w, h = self:pixelToGrid(object.width, 
                                           object.height)
-            
-            if type == Tile.TYPE.ONESIDED then
-              h = 2
-            end
-
             self:mapRectangle(x, y, w-1, h-1, setType)
           end
         end
@@ -104,35 +83,30 @@ Game loop
 --]]
 
 function CollisionGrid:draw(view) 
-  local start_x = math.max(1, math.floor(view.x / self.tilew))
-  local end_x = math.min(self.w, 
+  
+  local start_x, end_x, start_y, end_y
+  
+  if view then
+    start_x = math.max(1, math.floor(view.x / self.tilew))
+    end_x = math.min(self.w, 
               start_x + math.ceil(view.w / self.tilew))
   
-  local start_y = math.max(1, math.floor(view.y / self.tileh))
-  local end_y = math.min(self.h, 
+    start_y = math.max(1, math.floor(view.y / self.tileh))
+    end_y = math.min(self.h, 
               start_y + math.ceil(view.h / self.tileh))
+  else
+    start_x, end_x, start_y, end_y = 1, self.w, 1, self.h
+  end
   
   for x = start_x, end_x do
     for y = start_y, end_y do
-      local type = self.tiles[x][y].type
-      if type > 1 then
-        
-        local bink = "line"
-        if type == 2 then
-          love.graphics.setColor(0,0,255)
-        elseif type == 10 then
-          love.graphics.setColor(255,0,0)
-          bink = "fill"  
-        end
-        
-        love.graphics.rectangle(bink, (x-1)*self.tilew,
+      if self.tiles[x][y]:isWall()  then
+        love.graphics.rectangle("line", (x-1)*self.tilew,
             (y-1)*self.tileh, self.tilew, self.tileh)
         love.graphics.setColor(255,255,255)
       end
     end
   end
-
-    --TODO use sprite batches
 end
 
 --[[----------------------------------------------------------------------------
@@ -152,6 +126,9 @@ function CollisionGrid:pixelToTile(x, y)
                          math.floor(y / self.tileh) + 1)
 end
 
+function CollisionGrid:centrePixel()
+  return self.w*self.tilew/2, self.h*self.tileh/2
+end
 
 --[[----------------------------------------------------------------------------
 Conversion

@@ -59,7 +59,7 @@ function scaling:setup(desired_w, desired_h, fullscreen)
   local modes = love.graphics.getModes()
   table.sort(modes, function(a, b) 
     return ((a.width*a.height > b.width*b.height) 
-          and (a.width <= desired_w) and a.height <= desired_h) end)
+          and (a.width <= desired_w) and (a.height <= desired_h)) end)
        
   -- try each mode from best to worst
   for i, m in ipairs(modes) do

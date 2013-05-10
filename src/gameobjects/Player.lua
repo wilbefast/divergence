@@ -13,12 +13,12 @@ Lesser General Public License for more details.
 --]]
 
 --[[------------------------------------------------------------
-NINJA GAMEOBJECT
+PLAYER GAMEOBJECT
 --]]------------------------------------------------------------
 
-local Ninja = Class
+local Player = Class
 {
-  type = GameObject.TYPE.new("Ninja"),
+  type = GameObject.TYPE.new("Player"),
       
   speed = 64,
 
@@ -26,18 +26,16 @@ local Ninja = Class
     GameObject.init(self, x, y, 32, 32)
   end,
 }
-Ninja:include(GameObject)
+Player:include(GameObject)
 
 
 
-function Ninja:update(dt)
+function Player:update(dt)
   
   GameObject.update(self, dt)
   
-  local dx, dy = love.joystick.getAxes(1)
-  if dx and dy then
-    self.x, self.y = self.x + dx*dt*self.speed, self.y + dy*dt*self.speed
-  end
+  local dx, dy = input.x, input.y
+  self.x, self.y = self.x + dx*dt*self.speed, self.y + dy*dt*self.speed
 end
 
 
@@ -45,4 +43,4 @@ end
 Export
 --]]
 
-return Ninja
+return Player

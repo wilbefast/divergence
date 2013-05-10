@@ -19,8 +19,8 @@ GAME GAMESTATE
 local state = GameState.new()
 
 function state:init()
-  Ninja(100, 100)
-  Ninja(200, 200)
+  local mapfile = require("assets/levels/level01")
+  self.level = Level(mapfile)
 end
 
 function state:enter()
@@ -42,13 +42,13 @@ function state:keypressed(key, uni)
 end
 
 function state:update(dt)
-  GameObject.updateAll(dt)
+  self.level:update(dt)
 end
 
 
 function state:draw()
   love.graphics.print("Hello Game", 32, 32)
-  GameObject.drawAll()
+  self.level:draw()
 end
 
 return state

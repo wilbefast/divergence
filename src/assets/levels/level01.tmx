@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="16" height="16" tilewidth="32" tileheight="32">
+ <objectgroup name="walls" width="16" height="16">
+  <object x="0" y="0" width="96" height="512"/>
+  <object x="96" y="0" width="416" height="96"/>
+  <object x="416" y="96" width="96" height="416"/>
+  <object x="96" y="416" width="320" height="96"/>
+ </objectgroup>
+</map>
