@@ -43,31 +43,61 @@ function Player:update(dt)
   -- default update
   GameObject.update(self, dt)
   
+  
+  
   local grid = GameObject.COLLISIONGRID
   
-  -- is the player snapped to this grid?
-  local isSnappedX = (math.floor(self.x) % grid.tilew == 0)
-  local isSnappedY = (math.floor(self.y) % grid.tileh == 0)
-    
-  -- move snapped to grid
-  -- ...horizontally
-  if (math.abs(input.x) ~= 0) 
-  and isSnappedY 
-  and (not grid:pixelCollision(self.x + input.x, self.y)) 
-  then
-    self.dx = input.x*self.speed
-    self.maxX = self.x 
-  elseif isSnappedX then
+
+  -- HORIZONTAL MOVEMENT
+  ---------------------------------------------------------
+  -- local variables
+  local overShotX 
+    = ((self.targetX - self.x)*self.dx < 0)
+  local collisionX 
+    = grid:collision(self, self.x + input.x, self.y)
+  -- starting moving
+  if (math.abs(input.x) > 0) and (not collisionX) 
+  and (self.y == self.targetY) then
+    if overShotX then
+      local f = useful.tri(input.x > 0, 
+                useful.floor, useful.ceil)
+      self.targetX = f(self.x, grid.tilew) 
+                    + grid.tilew*input.x
+    end
+    self.dx = input.x * self.speed
+  elseif overShotX then
+    self.x = self.targetX
     self.dx = 0
   end
-  -- ...vertically
-  if (math.abs(input.y) ~= 0) 
-  and isSnappedX 
-  and (not grid:pixelCollision(self.x, self.y + input.y))
-  then
-    self.dy = input.y*self.speed
-  elseif isSnappedY then
+  -- stop at destination
+  if self.dx == 0 then
+    self.x = self.targetX
+  end
+
+  -- VERTICAL MOVEMENT
+  ---------------------------------------------------------
+  -- local variables
+  local overShotY
+    = ((self.targetY - self.y)*self.dy < 0)
+  local collisionY 
+    = grid:collision(self, self.x, self.y + input.y)
+  -- starting moving
+  if (math.abs(input.y) > 0) and (not collisionY)
+  and (self.x == self.targetX) then
+    if overShotY then
+      local f = useful.tri(input.y > 0, 
+                useful.floor, useful.ceil)
+      self.targetY = f(self.y, grid.tilew) 
+                    + grid.tileh*input.y
+    end
+    self.dy = input.y * self.speed
+  elseif overShotY then
+    self.y = self.targetY
     self.dy = 0
+  end
+  -- stop at destination
+  if self.dy == 0 then
+    self.y = self.targetY
   end
 end
 
@@ -75,6 +105,10 @@ function Player:draw()
   if DEBUG then
     GameObject.draw(self)
   end
+  
+  love.graphics.setColor(255, 0, 0)
+  love.graphics.rectangle("line", self.targetX, self.targetY, self.w, self.h)
+  love.graphics.setColor(255, 255, 255)
 end
 
 
