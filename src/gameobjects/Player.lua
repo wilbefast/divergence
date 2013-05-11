@@ -28,13 +28,25 @@ local Player = Class
   
   next_universe = 1,
 
-  init = function(self, x, y)
-    GameObject.init(self, x, y, 30, 30)
-    self.targetX = x
-    self.targetY = y
+  init = function(self, x, y, ghostX, ghostY)
+    GameObject.init(self, x, y, 24, 24)
+
+    if ghostX and ghostY then
+      self.ghostInputX = ghostX
+      self.ghostInputY = ghostY
+      self.targetX = x 
+        + ghostX*GameObject.COLLISIONGRID.tilew
+      self.targetY = y 
+        + ghostY*GameObject.COLLISIONGRID.tileh
+    else
+      self.targetX = x
+      self.targetY = y
+    end
     self.universe = Player.next_universe
     Player.next_universe = Player.next_universe + 1
   end,
+      
+  ghostDisappearTimer = 1
 }
 Player:include(GameObject)
 
@@ -43,9 +55,9 @@ Player:include(GameObject)
 Game loop
 --]]--
 
-function Player:update(dt)
+function Player:update(dt, level, view)
   -- default update
-  GameObject.update(self, dt)
+  GameObject.update(self, dt, level, view)
 
   -- cache
   local grid = GameObject.COLLISIONGRID
@@ -55,7 +67,10 @@ function Player:update(dt)
   if self.universe == 1 then
     dx, dy = input.x, input.y
   else
+    dx, dy = self.ghostInputX, self.ghostInputY
   end
+  
+  local endTurn =  false
   
   -- HORIZONTAL MOVEMENT
   ---------------------------------------------------------
@@ -69,8 +84,7 @@ function Player:update(dt)
   if (math.abs(dx) > 0) and (not collisionX) 
   and (self.dy == 0) then
     if overShotX then
-      -- create alternate version
-      Player(self.targetX, self.targetY)
+      endTurn = true
       -- reset target
       local f = useful.tri(dx > 0, 
                 useful.floor, useful.ceil)
@@ -97,8 +111,7 @@ function Player:update(dt)
   if (math.abs(dy) > 0) and (not collisionY)
   and (self.dx == 0) then
     if overShotY then
-      -- create alternate version
-      Player(self.targetX, self.targetY)
+      endTurn = true
       -- reset target
       local f = useful.tri(dy > 0, 
                 useful.floor, useful.ceil)
@@ -111,15 +124,44 @@ function Player:update(dt)
     self.y = self.targetY
     self.dy = 0
   end
+  
+  
+  -- destory clones
+  if (self.universe ~= 1) 
+  and (self.dx == 0) and (self.dy == 0) then
+    self.ghostDisappearTimer = self.ghostDisappearTimer - dt
+    if self.ghostDisappearTimer < 0 then
+      self.purge = true
+    end
+  end
+  
+  -- end of turn: create clones
+  if endTurn then
+    
+    function spawnPlayer(dirx, diry)
+      if not grid:collision(self, 
+        self.x + dirx*grid.tilew/2, 
+        self.y + diry*grid.tileh/2) then
+          Player(self.x, self.y, dirx, diry)
+      end
+    end
+
+    if input.x ~= 0 then
+      spawnPlayer(-input.x, 0)
+      spawnPlayer(0, -1)
+      spawnPlayer(0, 1)
+    else
+      spawnPlayer(0, -input.y)
+      spawnPlayer(-1, 0)
+      spawnPlayer(1, 0)
+    end
+  end
 end
 
 function Player:draw()
   if DEBUG then
     GameObject.draw(self)
   end
-  
-  local grid = GameObject.COLLISIONGRID
-  local bink = grid:collision(self)
 end
 
 

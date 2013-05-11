@@ -98,7 +98,7 @@ function GameObject.count(type)
   return #(GameObject.INSTANCES[type])
 end
 
-function GameObject.updateAll(dt, view)
+function GameObject.updateAll(dt, level, view)
   
   -- update objects
   -- ...for each type of object
@@ -107,7 +107,7 @@ function GameObject.updateAll(dt, view)
     useful.map(objects_of_type,
       function(object)
         -- ...update the object
-        object:update(dt, self, view)
+        object:update(dt, level, view)
         -- ...check collisions with other object
         -- ...... for each other type of object
         for othertype, objects_of_othertype 
@@ -219,7 +219,7 @@ end
 Game loop
 --]]
 
-function GameObject:update(dt)
+function GameObject:update(dt, level)
   
   -- object may have several fisix settings
   local fisix = (self.fisix or self)
