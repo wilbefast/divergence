@@ -70,9 +70,9 @@ function Player:update(dt, level, view)
     dx, dy = self.dx, self.dy
   end
   local collisionX 
-    = grid:pixelCollision(x + dx*grid.tilew/2, y)
+    = grid:pixelCollision(x + dx*self.w, y)
   local collisionY 
-    = grid:pixelCollision(x, y + dy*grid.tileh/2) 
+    = grid:pixelCollision(x, y + dy*self.h) 
     
 
   if level.turnProgress == 0 then
@@ -194,15 +194,15 @@ function Player:draw()
   end
     
   
-  love.graphics.rectangle("fill", 
+  love.graphics.rectangle("line", 
     self.x, self.y, self.w, self.h)
   
-  love.graphics.setColor(255, 0, 0)
+  --[[love.graphics.setColor(255, 0, 0)
     love.graphics.rectangle("line", 
       self.startX, self.startY, self.w, self.h)
   love.graphics.setColor(0, 0, 255)
     love.graphics.rectangle("line", 
-      self.targetX, self.targetY, self.w, self.h)
+      self.targetX, self.targetY, self.w, self.h)--]]
   love.graphics.setColor(255, 255, 255)
   
 end
