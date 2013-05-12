@@ -45,6 +45,9 @@ local Level = Class
         end
       end
     end
+    
+    -- pseudo-turn-based game
+    self.turnProgress = 0
   end,
 }
   
@@ -53,7 +56,15 @@ Game loop
 --]]--
 
 function Level:update(dt)
-  GameObject.updateAll(dt)
+  
+  if self.turnProgress > 0 then
+    self.turnProgress = self.turnProgress + dt
+    if self.turnProgress > 1 then
+      self.turnProgress = 0
+    end
+  end
+  
+  GameObject.updateAll(dt, self)
 end
 
 function Level:draw()

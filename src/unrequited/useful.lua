@@ -150,4 +150,9 @@ function useful.randIn(table)
   return table[math.random(#table)]
 end
 
+function useful.lerp(a, b, inter)
+  inter = useful.clamp(inter, 0, 1)
+  return ((1-inter)*a + inter*b)
+end
+
 return useful

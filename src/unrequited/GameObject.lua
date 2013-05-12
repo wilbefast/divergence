@@ -250,7 +250,7 @@ function GameObject:update(dt, level)
   if math.abs(self.dx) < 0.01 then self.dx = 0 end
   if math.abs(self.dy) < 0.01 then self.dy = 0 end
   
-  if GameObject.COLLISIONGRID then
+  if false --[[GameObject.COLLISIONGRID --]] then
     local collisiongrid = GameObject.COLLISIONGRID
     -- check if we're on the ground
     self.airborne = 

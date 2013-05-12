@@ -31,6 +31,8 @@ local Player = Class
   init = function(self, x, y, ghostX, ghostY)
     GameObject.init(self, x, y, 32, 32)
 
+    self.startX = x
+    self.startY = y
     if ghostX and ghostY then
       self.ghostInputX = ghostX
       self.ghostInputY = ghostY
@@ -46,7 +48,8 @@ local Player = Class
     Player.next_universe = Player.next_universe + 1
   end,
       
-  ghostDisappearTimer = 1
+  ghostDisappearTimer = 1,
+  progress = 0
 }
 Player:include(GameObject)
 
@@ -56,21 +59,53 @@ Game loop
 --]]--
 
 function Player:update(dt, level, view)
-  -- default update
-  GameObject.update(self, dt, level, view)
-
+  
   -- cache
   local grid = GameObject.COLLISIONGRID
   local x, y = self:centreX(), self:centreY()
-  
-  -- only the original universe player is controlled
   local dx, dy = 0, 0
   if self.universe == 1 then
     dx, dy = input.x, input.y
   else
-    dx, dy = self.ghostInputX, self.ghostInputY
+    dx, dy = self.dx, self.dy
+  end
+  local collisionX 
+    = grid:pixelCollision(x + dx*grid.tilew/2, y)
+  local collisionY 
+    = grid:pixelCollision(x, y + dy*grid.tileh/2) 
+    
+
+  if level.turnProgress == 0 then
+    
+    self.x, self.y = self.targetX, self.targetY
+    self.startX, self.startY = self.x, self.y
+    
+    if (math.abs(dx) > 0) and (not collisionX) then
+      
+
+      local f = useful.tri(dx > 0, useful.floor, useful.ceil)
+      self.targetX = f(self.x, grid.tilew) + grid.tilew*dx
+      level.turnProgress = level.turnProgress + dt
+    end
+      
+    if (math.abs(dy) > 0) and (not collisionY) then
+      local f = useful.tri(dy > 0, useful.floor, useful.ceil)
+      self.targetY = f(self.y, grid.tilew) + grid.tileh*dy
+      level.turnProgress = level.turnProgress + dt
+    end
+  else
+    self.x = useful.lerp(self.startX, self.targetX, 
+                          level.turnProgress)
+    self.y = useful.lerp(self.startY, self.targetY, 
+                          level.turnProgress)
   end
   
+  
+    -- self.x, self.y = self.targetX, self.targetY
+    -- self.startX, self.startY = self.x, self.y
+  
+  -- only the original universe player is controlled
+  --[[
   local endTurn =  false
   
   -- HORIZONTAL MOVEMENT
@@ -78,8 +113,6 @@ function Player:update(dt, level, view)
   -- local variables
   local overShotX 
     = ((self.targetX - self.x)*self.dx < 0)
-  local collisionX 
-    = grid:pixelCollision(x + dx*grid.tilew/2, y)
   -- starting moving
   if (math.abs(dx) > 0) and (not collisionX) 
   and (self.dy == 0) then
@@ -104,8 +137,6 @@ function Player:update(dt, level, view)
   -- local variables
   local overShotY
     = ((self.targetY - self.y)*self.dy < 0)
-  local collisionY 
-    = grid:pixelCollision(x, y + dy*grid.tileh/2)
   -- starting moving
   if (math.abs(dy) > 0) and (not collisionY)
   and (self.dx == 0) then
@@ -129,9 +160,9 @@ function Player:update(dt, level, view)
   if (self.universe ~= 1) 
   and (self.dx == 0) and (self.dy == 0) then
     self.ghostDisappearTimer = self.ghostDisappearTimer - dt
-    if self.ghostDisappearTimer < 0 then
+    --if self.ghostDisappearTimer < 0 then
       self.purge = true
-    end
+    --end
   end
   
   -- end of turn: create clones
@@ -145,16 +176,16 @@ function Player:update(dt, level, view)
       end
     end
 
-    if input.x ~= 0 then
-      spawnPlayer(-input.x, 0)
+    if dx ~= 0 then
+      spawnPlayer(-dx, 0)
       spawnPlayer(0, -1)
       spawnPlayer(0, 1)
     else
-      spawnPlayer(0, -input.y)
+      spawnPlayer(0, -dy)
       spawnPlayer(-1, 0)
       spawnPlayer(1, 0)
     end
-  end
+  end--]]
 end
 
 function Player:draw()
@@ -162,6 +193,18 @@ function Player:draw()
     GameObject.draw(self)
   end
     
+  
+  love.graphics.rectangle("fill", 
+    self.x, self.y, self.w, self.h)
+  
+  love.graphics.setColor(255, 0, 0)
+    love.graphics.rectangle("line", 
+      self.startX, self.startY, self.w, self.h)
+  love.graphics.setColor(0, 0, 255)
+    love.graphics.rectangle("line", 
+      self.targetX, self.targetY, self.w, self.h)
+  love.graphics.setColor(255, 255, 255)
+  
 end
 
 
