@@ -84,6 +84,12 @@ end
 CONTAINER
 --]]------------------------------------------------------------
 
+function GameObject.purgeAll()
+  for type, _ in pairs(GameObject.INSTANCES) do
+    GameObject.INSTANCES[type] = { }
+  end
+end
+
 function GameObject.get(type, i)
   i = (i or 1)
   local objects = GameObject.INSTANCES[type] 

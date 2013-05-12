@@ -23,6 +23,7 @@ function state:init()
 end
 
 function state:enter()
+  love.graphics.setFont(love.graphics.newFont(32))
 end
 
 

@@ -27,6 +27,9 @@ local Level = Class
   
     -- load collision-grid
     self.collisiongrid = CollisionGrid(levelfile)
+    
+    -- clear gameobject
+    GameObject.purgeAll()
     GameObject.COLLISIONGRID = self.collisiongrid
     
     -- point camera at centre of collision-grid
@@ -93,7 +96,7 @@ function Level:draw()
     GameObject.drawAll()
   self.camera:detach()
 end
-  
+
 --[[------------------------------------------------------------
 EXPORT
 --]]------------------------------------------------------------

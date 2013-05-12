@@ -66,7 +66,7 @@ function love.load(arg)
   love.graphics.setLineStyle("rough", 1)
 
   -- go to the initial gamestate
-  GameState.switch(title)
+  GameState.switch(game)
 end
 
 function love.focus(f)

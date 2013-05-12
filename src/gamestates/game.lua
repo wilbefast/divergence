@@ -18,9 +18,17 @@ GAME GAMESTATE
 
 local state = GameState.new()
 
-function state:init()
-  local mapfile = require("assets/levels/level01")
+function state:reloadLevel()
+  local mapfile = require(
+    "assets/levels/level" .. self.level_number)
+  Player.next_universe = 1
   self.level = Level(mapfile)
+  
+end
+
+function state:init()
+  self.level_number = 1
+  self:reloadLevel()
 end
 
 function state:enter()
@@ -37,6 +45,10 @@ function state:keypressed(key, uni)
   -- quit game
   if key=="escape" then
     love.event.push("quit")
+  else
+    if self.level.gameOver then
+      self:reloadLevel()
+    end
   end
   
 end
