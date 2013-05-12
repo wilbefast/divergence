@@ -1,5 +1,5 @@
 --[[
-(C) Copyright 2013 William
+(C) Copyright 2013 William Dyce
 
 All rights reserved. This program and the accompanying materials
 are made available under the terms of the GNU Lesser General Public License
@@ -11,47 +11,45 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 Lesser General Public License for more details.
 --]]
+--[[------------------------------------------------------------
+PLAYER GAMEOBJECT
+--]]------------------------------------------------------------
+
+--[[------------------------------------------------------------
+Initialisation
+--]]--
+
+local SpecialEffect = Class
+{
+  type = GameObject.TYPE.new("SpecialEffect"),
+  init = function(self, x, y, drawf)
+    GameObject.init(self, x, y)
+    self.x = x
+    self.y = y
+    self.draw = drawf
+  end,
+      
+  life = 1,
+}
+SpecialEffect:include(GameObject)
 
 
 --[[------------------------------------------------------------
-TITLE GAMESTATE
---]]------------------------------------------------------------
+Game loop
+--]]--
 
-local state = GameState.new()
-
-function state:init()
-end
-
-function state:enter()
-end
-
-
-function state:leave()
-end
-
-
-function state:keypressed(key, uni)
-  
-  -- quit game
-  if key=="escape" then
-    love.event.push("quit")
-    
-  elseif key=="return" then
-    GameState.switch(game)
+function SpecialEffect:update(dt)
+  self.life = self.life - dt
+  if self.life < 0 then
+    self.purge = true
   end
-  
+  self.x = self.x or self.prevx
+  self.y = self.y or self.prevy
 end
-
-function state:update(dt)
-end
-
-
-function state:draw()
-end
-
 
 --[[------------------------------------------------------------
 EXPORT
 --]]------------------------------------------------------------
 
-return state
+
+return SpecialEffect

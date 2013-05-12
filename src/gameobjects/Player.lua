@@ -20,6 +20,19 @@ PLAYER GAMEOBJECT
 Initialisation
 --]]--
 
+local IMG_MAN 
+  = love.graphics.newImage("assets/images/man.png")
+
+function drawAppear(self)
+  love.graphics.setColor(0, 255, 255, self.life*255)
+  love.graphics.rectangle("fill", 
+      self.x - (1-self.life)*16, 
+      self.y - (1-self.life)*16, 
+      32 + (1 - self.life)*32, 
+      32 + (1 - self.life)*32)
+  love.graphics.setColor(255, 255, 255, 255)
+end
+
 local Player = Class
 {
   type = GameObject.TYPE.new("Player"),
@@ -46,6 +59,8 @@ local Player = Class
     end
     self.universe = Player.next_universe
     Player.next_universe = Player.next_universe + 1
+    
+    SpecialEffect(self.x, self.y, drawAppear)
   end,
       
   ghostDisappearTimer = 1,
@@ -72,6 +87,22 @@ function Player:eventCollision(other, level)
   and (self.universe > other.universe) then
     self.purge = true
   end
+end
+
+--[[------------------------------------------------------------
+Destroy
+--]]--
+
+function drawDisappear(self)
+  love.graphics.setColor(255, 255, 0, self.life*255)
+  love.graphics.rectangle("fill", 
+      self.x + (1-self.life)*16, self.y + (1-self.life)*16, 
+      self.life*32, self.life*32)
+  love.graphics.setColor(255, 255, 255, 255)
+end
+
+function Player:onPurge()
+  SpecialEffect(self.x, self.y, drawDisappear)
 end
 
 --[[------------------------------------------------------------
@@ -167,8 +198,9 @@ function Player:draw()
   elseif self.turnQueued then
     love.graphics.setColor(0, 0, 255)
   end
-  love.graphics.rectangle("line", 
-    self.x+4, self.y+4, self.w-8, self.h-8)
+  love.graphics.draw(IMG_MAN, self.x, self.y)
+  --love.graphics.rectangle("line", 
+    --self.x+4, self.y+4, self.w-8, self.h-8)
     --[[love.graphics.line(
       self.startX+self.w/2, self.startY+self.h/2, 
         self.targetX+self.w/2, self.targetY+self.h/2)--]]

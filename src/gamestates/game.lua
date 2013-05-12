@@ -47,7 +47,6 @@ end
 
 
 function state:draw()
-  love.graphics.print("Hello Game", 32, 32)
   self.level:draw()
 end
 

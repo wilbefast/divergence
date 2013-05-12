@@ -28,6 +28,7 @@ GameObject = require("unrequited/GameObject")
 Tile = require("unrequited/Tile")
 CollisionGrid = require("unrequited/CollisionGrid")
 
+SpecialEffect = require("gameobjects/SpecialEffect")
 Player = require("gameobjects/Player")
 
 Level = require("Level")
