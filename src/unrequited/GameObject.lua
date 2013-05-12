@@ -88,6 +88,7 @@ function GameObject.purgeAll()
   for type, _ in pairs(GameObject.INSTANCES) do
     GameObject.INSTANCES[type] = { }
   end
+  GameObject.NEXT_ID = 1
 end
 
 function GameObject.get(type, i)

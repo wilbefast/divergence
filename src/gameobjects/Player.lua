@@ -25,11 +25,9 @@ local IMG_MAN
 
 function drawAppear(self)
   love.graphics.setColor(0, 255, 255, self.life*255)
-  love.graphics.rectangle("fill", 
-      self.x - (1-self.life)*16, 
-      self.y - (1-self.life)*16, 
-      32 + (1 - self.life)*32, 
-      32 + (1 - self.life)*32)
+  
+  love.graphics.draw(IMG_MAN, self.x+16, self.y+16, 
+      0, 1 + 2*(1-self.life), 1 + 2*(1-self.life), 16, 16)
   love.graphics.setColor(255, 255, 255, 255)
 end
 
@@ -56,11 +54,10 @@ local Player = Class
     else
       self.targetX = x
       self.targetY = y
+      SpecialEffect(self.x, self.y, drawAppear)
     end
     self.universe = Player.next_universe
     Player.next_universe = Player.next_universe + 1
-    
-    SpecialEffect(self.x, self.y, drawAppear)
   end,
       
   ghostDisappearTimer = 1,
@@ -80,9 +77,10 @@ end
 function Player:eventCollision(other, level)
   
   if other.type == GameObject.TYPE.Player then
-    if (self.targetX == other.targetX)
-    and (self.targetY == other.targetY)
-    and (self.universe > other.universe) then
+    if (self.x == other.x)
+    and (self.y == other.y)
+    and (self.universe > other.universe) 
+    and (not level.turnQueued) then
       self.purge = true
     end
     
@@ -98,10 +96,9 @@ Destroy
 --]]--
 
 function drawDisappear(self)
-  love.graphics.setColor(255, 255, 0, self.life*255)
-  love.graphics.rectangle("fill", 
-      self.x + (1-self.life)*16, self.y + (1-self.life)*16, 
-      self.life*32, self.life*32)
+  
+  love.graphics.setColor(255, 0, 0, self.life*128)
+  love.graphics.draw(IMG_MAN, self.x, self.y)
   love.graphics.setColor(255, 255, 255, 255)
 end
 
@@ -158,7 +155,6 @@ function Player:update(dt, level, view)
     if (math.abs(dx) > 0) and (not collisionX) then
       local f = useful.tri(dx > 0, useful.floor, useful.ceil)
       self.targetX = f(self.x, grid.tilew) + grid.tilew*dx
-      level.turnProgress = level.turnProgress + dt
       
       -- queue new turn
       if self.universe == 1 then level:queueTurn() end
@@ -167,11 +163,12 @@ function Player:update(dt, level, view)
       spawnPlayer(-dx, 0)
       spawnPlayer(0, -1)
       spawnPlayer(0, 1)
+      --SpecialEffect(self.x, self.y, drawAppear)
+      
     -- start moving VERTICALLY
     elseif (math.abs(dy) > 0) and (not collisionY) then
       local f = useful.tri(dy > 0, useful.floor, useful.ceil)
       self.targetY = f(self.y, grid.tilew) + grid.tileh*dy
-      level.turnProgress = level.turnProgress + dt
       
       -- queue new turn
       if self.universe == 1 then level:queueTurn() end
@@ -180,17 +177,21 @@ function Player:update(dt, level, view)
       spawnPlayer(0, -dy)
       spawnPlayer(-1, 0)
       spawnPlayer(1, 0)
+      --SpecialEffect(self.x, self.y, drawAppear)
       
     else
       -- moved into a wall
       if self.universe > 1 then
         -- destroy
         self.purge = true
+        
         -- spawn clones
         spawnPlayer(0, -1)
         spawnPlayer(-1, 0)
         spawnPlayer(1, 0)
         spawnPlayer(0, 1)
+        --SpecialEffect(self.x, self.y, drawAppear)
+        
       elseif collisionX or collisionY then
         -- game over!
         level.gameOver = true
@@ -213,9 +214,11 @@ end
 
 function Player:draw()
   if DEBUG then
-    GameObject.draw(self)
+   --GameObject.draw(self)
   end
+  love.graphics.setColor(255, 255, 255, 200)
   love.graphics.draw(IMG_MAN, self.x, self.y)
+  love.graphics.setColor(255, 255, 255, 255)
 end
 
 

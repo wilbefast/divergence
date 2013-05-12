@@ -40,7 +40,7 @@ Game loop
 --]]--
 
 function SpecialEffect:update(dt)
-  self.life = self.life - dt
+  self.life = self.life - dt*2.5
   if self.life < 0 then
     self.purge = true
   end
