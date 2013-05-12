@@ -60,6 +60,10 @@ function love.load(arg)
 
   -- initialise random
   math.randomseed(os.time())
+  
+  -- pixelated :D
+  love.graphics.setDefaultImageFilter("nearest", "nearest")
+  love.graphics.setLineStyle("rough", 1)
 
   -- go to the initial gamestate
   GameState.switch(title)
