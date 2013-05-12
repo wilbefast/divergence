@@ -111,6 +111,12 @@ Game loop
 
 function Player:update(dt, level, view)
   
+  -- do nothing if it's game over
+  if level.gameOver then
+    return
+  end
+  
+  
   -- cache
   local grid = GameObject.COLLISIONGRID
   local x, y = self:centreX(), self:centreY()
@@ -172,16 +178,30 @@ function Player:update(dt, level, view)
       spawnPlayer(-1, 0)
       spawnPlayer(1, 0)
       
-    elseif self.universe ~= 1 then
-      self.purge = true
-      -- spawn clones
-      spawnPlayer(0, -1)
-      spawnPlayer(-1, 0)
-      spawnPlayer(1, 0)
-      spawnPlayer(0, 1)
+    else
+      -- moved into a wall
+      if self.universe > 1 then
+        -- destroy
+        self.purge = true
+        -- spawn clones
+        spawnPlayer(0, -1)
+        spawnPlayer(-1, 0)
+        spawnPlayer(1, 0)
+        spawnPlayer(0, 1)
+      elseif collisionX or collisionY then
+        -- game over!
+        level.gameOver = true
+        GameObject.mapToAll(function(o) 
+        if (o.type == GameObject.TYPE.Player)
+        and (o.universe > 1)then
+          o.purge = true
+        end
+      end)
+      end
     end
   end
 
+  -- move the player
   self.x = useful.lerp(self.startX, self.targetX, 
                         level.turnProgress)
   self.y = useful.lerp(self.startY, self.targetY, 
@@ -190,32 +210,9 @@ end
 
 function Player:draw()
   if DEBUG then
-    --GameObject.draw(self)
-  end
-    
-  if self.universe == 1 then
-    --love.graphics.setColor(255, 0, 0)
-  elseif self.turnQueued then
-    love.graphics.setColor(0, 0, 255)
+    GameObject.draw(self)
   end
   love.graphics.draw(IMG_MAN, self.x, self.y)
-  --love.graphics.rectangle("line", 
-    --self.x+4, self.y+4, self.w-8, self.h-8)
-    --[[love.graphics.line(
-      self.startX+self.w/2, self.startY+self.h/2, 
-        self.targetX+self.w/2, self.targetY+self.h/2)--]]
-  --love.graphics.print(self.universe, self.x+6, self.y+6)
-  love.graphics.setColor(255, 255, 255)
-  
-
-  --[[love.graphics.setColor(255, 0, 0)
-    love.graphics.rectangle("line", 
-      self.startX, self.startY, self.w, self.h)
-  love.graphics.setColor(0, 0, 255)
-    love.graphics.rectangle("line", 
-      self.targetX, self.targetY, self.w, self.h)
-  love.graphics.setColor(255, 255, 255)--]]
-  
 end
 
 

@@ -56,7 +56,11 @@ Game loop
 --]]--
   
 function Level:queueTurn()
-  GameObject.mapToAll(function(o) o.turnQueued = true end)
+  GameObject.mapToAll(function(o) 
+    if o.type == GameObject.TYPE.Player then
+      o.turnQueued = true
+    end
+  end)
   self.turnQueued = true
 end
 
@@ -79,7 +83,13 @@ end
 
 function Level:draw()
   self.camera:attach()
+    if self.gameOver then
+      love.graphics.setColor(255, 0, 0)
+    end
     self.collisiongrid:draw()
+    if self.gameOver then
+      love.graphics.setColor(255, 255, 255)
+    end
     GameObject.drawAll()
   self.camera:detach()
 end
