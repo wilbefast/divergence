@@ -29,7 +29,7 @@ local Player = Class
   next_universe = 1,
 
   init = function(self, x, y, ghostX, ghostY)
-    GameObject.init(self, x, y, 24, 24)
+    GameObject.init(self, x, y, 32, 32)
 
     if ghostX and ghostY then
       self.ghostInputX = ghostX
@@ -61,6 +61,7 @@ function Player:update(dt, level, view)
 
   -- cache
   local grid = GameObject.COLLISIONGRID
+  local x, y = self:centreX(), self:centreY()
   
   -- only the original universe player is controlled
   local dx, dy = 0, 0
@@ -78,8 +79,7 @@ function Player:update(dt, level, view)
   local overShotX 
     = ((self.targetX - self.x)*self.dx < 0)
   local collisionX 
-    = grid:collision(self, 
-        self.x + dx*grid.tilew/2, self.y)
+    = grid:pixelCollision(x + dx*grid.tilew/2, y)
   -- starting moving
   if (math.abs(dx) > 0) and (not collisionX) 
   and (self.dy == 0) then
@@ -105,8 +105,7 @@ function Player:update(dt, level, view)
   local overShotY
     = ((self.targetY - self.y)*self.dy < 0)
   local collisionY 
-    = grid:collision(self, 
-        self.x, self.y + dy*grid.tileh/2)
+    = grid:pixelCollision(x, y + dy*grid.tileh/2)
   -- starting moving
   if (math.abs(dy) > 0) and (not collisionY)
   and (self.dx == 0) then
@@ -139,7 +138,7 @@ function Player:update(dt, level, view)
   if endTurn then
     
     function spawnPlayer(dirx, diry)
-      if not grid:collision(self, 
+      if not grid:pixelCollision(
         self.x + dirx*grid.tilew/2, 
         self.y + diry*grid.tileh/2) then
           Player(self.x, self.y, dirx, diry)
@@ -162,6 +161,7 @@ function Player:draw()
   if DEBUG then
     GameObject.draw(self)
   end
+    
 end
 
 
