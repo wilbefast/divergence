@@ -49,6 +49,8 @@ local Level = Class
       end
     end
     
+    self.start = true
+    
     -- pseudo-turn-based game
     self.turnProgress = 0
   end,
@@ -88,11 +90,13 @@ function Level:draw()
   self.camera:attach()
     if self.gameOver then
       love.graphics.setColor(255, 0, 0)
+    elseif self.victory then
+      love.graphics.setColor(0, 255, 0)
+    elseif self.start then
+      love.graphics.setColor(0, 0, 255)
     end
     self.collisiongrid:draw()
-    if self.gameOver then
-      love.graphics.setColor(255, 255, 255)
-    end
+    love.graphics.setColor(255, 255, 255)
     GameObject.drawAll()
   self.camera:detach()
 end

@@ -48,9 +48,14 @@ function state:keypressed(key, uni)
   else
     if self.level.gameOver then
       self:reloadLevel()
+    elseif self.level.start then
+      self.level.start = false
+      
+    elseif self.level.victory then
+      self.level_number = self.level_number + 1
+      self:reloadLevel()
     end
   end
-  
 end
 
 function state:update(dt)

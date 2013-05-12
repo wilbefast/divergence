@@ -112,7 +112,7 @@ Game loop
 function Player:update(dt, level, view)
   
   -- do nothing if it's game over
-  if level.gameOver then
+  if level.gameOver or level.start or level.victory then
     return
   end
   
