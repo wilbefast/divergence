@@ -143,7 +143,7 @@ return {
           shape = "rectangle",
           x = 128,
           y = 128,
-          width = 96,
+          width = 128,
           height = 32,
           visible = true,
           properties = {}
@@ -185,6 +185,26 @@ return {
           shape = "rectangle",
           x = 192,
           y = 224,
+          width = 32,
+          height = 32,
+          visible = true,
+          properties = {}
+        }
+      }
+    },
+    {
+      type = "objectgroup",
+      name = "exit",
+      visible = true,
+      opacity = 1,
+      properties = {},
+      objects = {
+        {
+          name = "",
+          type = "",
+          shape = "rectangle",
+          x = 192,
+          y = 160,
           width = 32,
           height = 32,
           visible = true,

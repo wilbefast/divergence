@@ -45,6 +45,10 @@ local Level = Class
           for i, object in ipairs(layer.objects) do
             self.player = Player(object.x, object.y)
           end
+        elseif layer.name == "exit" then
+          for i, object in ipairs(layer.objects) do
+            Exit(object.x, object.y)
+          end
         end
       end
     end
@@ -93,7 +97,7 @@ function Level:draw()
     elseif self.victory then
       love.graphics.setColor(0, 255, 0)
     elseif self.start then
-      love.graphics.setColor(0, 0, 255)
+      --love.graphics.setColor(128, 128, 255)
     end
     self.collisiongrid:draw()
     love.graphics.setColor(255, 255, 255)

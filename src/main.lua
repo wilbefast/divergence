@@ -28,6 +28,7 @@ GameObject = require("unrequited/GameObject")
 Tile = require("unrequited/Tile")
 CollisionGrid = require("unrequited/CollisionGrid")
 
+Exit = require("gameobjects/Exit")
 SpecialEffect = require("gameobjects/SpecialEffect")
 Player = require("gameobjects/Player")
 
@@ -43,7 +44,7 @@ game = require("gamestates/game")
 GLOBAL SETTINGS
 --]]------------------------------------------------------------
 
-DEBUG = true
+DEBUG = false
 audio.mute = DEBUG
 
 --[[------------------------------------------------------------

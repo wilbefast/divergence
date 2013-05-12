@@ -13,39 +13,39 @@ Lesser General Public License for more details.
 --]]
 
 --[[------------------------------------------------------------
-SPECIALEFFECT GAMEOBJECT
+EXIT GAMEOBJECT
 --]]------------------------------------------------------------
 
 --[[------------------------------------------------------------
 Initialisation
 --]]--
 
-local SpecialEffect = Class
+local Exit = Class
 {
-  type = GameObject.TYPE.new("SpecialEffect"),
-  init = function(self, x, y, drawf)
-    GameObject.init(self, x, y)
+  type = GameObject.TYPE.new("Exit"),
+  init = function(self, x, y)
+    GameObject.init(self, x, y, 32, 32)
     self.x = x
     self.y = y
-    self.draw = drawf
   end,
-      
-  life = 1,
 }
-SpecialEffect:include(GameObject)
+Exit:include(GameObject)
 
 
 --[[------------------------------------------------------------
 Game loop
 --]]--
 
-function SpecialEffect:update(dt)
-  self.life = self.life - dt
-  if self.life < 0 then
-    self.purge = true
-  end
+function Exit:update()
   self.x = self.x or self.prevx
   self.y = self.y or self.prevy
+end
+
+function Exit:draw()
+  love.graphics.setColor(0, 255, 0)
+  love.graphics.rectangle(
+    "fill", self.x + 4, self.y + 4, 24, 24)
+  love.graphics.setColor(255, 255, 255)
 end
 
 --[[------------------------------------------------------------
@@ -53,4 +53,4 @@ EXPORT
 --]]------------------------------------------------------------
 
 
-return SpecialEffect
+return Exit

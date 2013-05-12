@@ -244,6 +244,11 @@ Game loop
 --]]
 
 function GameObject:update(dt, level)
+end
+
+--[[
+function GameObject:update(dt, level)
+
   
   -- object may have several fisix settings
   local fisix = (self.fisix or self)
@@ -274,7 +279,7 @@ function GameObject:update(dt, level)
   if math.abs(self.dx) < 0.01 then self.dx = 0 end
   if math.abs(self.dy) < 0.01 then self.dy = 0 end
   
-  if false --[[GameObject.COLLISIONGRID --]] then
+  if false GameObject.COLLISIONGRID then
     local collisiongrid = GameObject.COLLISIONGRID
     -- check if we're on the ground
     self.airborne = 
@@ -323,7 +328,7 @@ function GameObject:update(dt, level)
     self.x = self.x + self.dx*dt
     self.y = self.y + self.dy*dt
   end
-end
+end--]]
 
 function GameObject:draw()
   if DEBUG then

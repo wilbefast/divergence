@@ -73,19 +73,31 @@ Collision
 --]]--
 
 function Player:collidesType(type)
-  if type == GameObject.TYPE.Player then
-    return true
-  else
-    return false
-  end
+  return ((type == GameObject.TYPE.Player)
+      or (type == GameObject.TYPE.Exit))
 end
 
 function Player:eventCollision(other, level)
   
-  if (self.targetX == other.targetX)
-  and (self.targetY == other.targetY)
-  and (self.universe > other.universe) then
-    self.purge = true
+  if other.type == GameObject.TYPE.Player then
+    if (self.targetX == other.targetX)
+    and (self.targetY == other.targetY)
+    and (self.universe > other.universe) then
+      self.purge = true
+    end
+    
+  elseif other.type == GameObject.TYPE.Exit then
+    if (self.universe == 1) and (level.turnProgress == 0) then
+      self.x, self.y = self.targetX, self.targetY
+      level.victory = true
+      GameObject.mapToAll(function(o) 
+          if (o.type == GameObject.TYPE.Player)
+          and (o.universe > 1)then
+            o.purge = true
+          end
+        end)
+      other.purge = true
+    end
   end
 end
 
