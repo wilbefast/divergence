@@ -87,20 +87,8 @@ function Player:eventCollision(other, level)
     end
     
   elseif other.type == GameObject.TYPE.Exit then
-    if (self.universe == 1) and (level.turnProgress == 0) then
-      self.x, self.y = self.targetX, self.targetY
-      
+    if self.universe == 1 then
       other.purge = true
-      
-      
-      level.victory = true
-      GameObject.mapToAll(function(o) 
-          if (o.type == GameObject.TYPE.Player)
-          and (o.universe > 1)then
-            o.purge = true
-          end
-        end)
-      
     end
   end
 end
@@ -131,7 +119,6 @@ function Player:update(dt, level, view)
   if level.gameOver or level.start or level.victory then
     return
   end
-  
   
   -- cache
   local grid = GameObject.COLLISIONGRID

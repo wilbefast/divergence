@@ -209,6 +209,61 @@ return {
           height = 32,
           visible = true,
           properties = {}
+        },
+        {
+          name = "",
+          type = "",
+          shape = "rectangle",
+          x = 384,
+          y = 352,
+          width = 32,
+          height = 32,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "",
+          type = "",
+          shape = "rectangle",
+          x = 224,
+          y = 160,
+          width = 32,
+          height = 32,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "",
+          type = "",
+          shape = "rectangle",
+          x = 96,
+          y = 384,
+          width = 32,
+          height = 32,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "",
+          type = "",
+          shape = "rectangle",
+          x = 192,
+          y = 352,
+          width = 32,
+          height = 32,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "",
+          type = "",
+          shape = "rectangle",
+          x = 96,
+          y = 96,
+          width = 32,
+          height = 32,
+          visible = true,
+          properties = {}
         }
       }
     }

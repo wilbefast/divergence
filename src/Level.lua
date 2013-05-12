@@ -74,11 +74,25 @@ function Level:queueTurn()
 end
 
 function Level:update(dt)
+
+  
   if (self.turnProgress > 0) or self.turnQueued then
     self.turnQueued = false
     self.turnProgress = self.turnProgress + dt
     if self.turnProgress > 1 then
+      
       self.turnProgress = 0
+      
+      if GameObject.count(GameObject.TYPE.Exit) == 0 then
+        self.victory = true
+        GameObject.mapToAll(function(o) 
+            if (o.type == GameObject.TYPE.Player)
+            and (o.universe > 1)then
+              o.purge = true
+            end
+          end)
+      end
+        
       GameObject.mapToAll(function(o) 
       o.turnQueued = false 
       o.x, o.y = o.targetX, o.targetY
