@@ -55,7 +55,7 @@ local CollisionGrid = Class
             local x, y = self:pixelToGrid(object.x, object.y)
             local w, h = self:pixelToGrid(object.width, 
                                           object.height)
-            --self:mapRectangle(x, y, w-1, h-1, setType)
+            self:mapRectangle(x, y, w-1, h-1, setType)
           end
         end
       end

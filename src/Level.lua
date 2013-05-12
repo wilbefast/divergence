@@ -61,8 +61,6 @@ function Level:queueTurn()
 end
 
 function Level:update(dt)
-  print(GameObject.count())
-  
   if (self.turnProgress > 0) or self.turnQueued then
     self.turnQueued = false
     self.turnProgress = self.turnProgress + dt

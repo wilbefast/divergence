@@ -83,7 +83,7 @@ end
 MIN_DT = 1/60
 MAX_DT = 1/30
 function love.update(dt)
-  dt = math.max(MIN_DT, math.min(MAX_DT, dt))
+  dt = useful.clamp(dt, MIN_DT, MAX_DT)
   
   input:update(dt)
   GameState.update(dt)

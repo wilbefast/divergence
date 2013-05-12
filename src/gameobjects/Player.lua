@@ -67,10 +67,10 @@ end
 
 function Player:eventCollision(other, level)
   
-  if level.turnProgress == 0 then
-    if self.universe > other.universe then
-      self.purge = true
-    end
+  if (self.targetX == other.targetX)
+  and (self.targetY == other.targetY)
+  and (self.universe > other.universe) then
+    self.purge = true
   end
 end
 
@@ -125,8 +125,8 @@ function Player:update(dt, level, view)
       
       -- spawn clones
       spawnPlayer(-dx, 0)
-      --spawnPlayer(0, -1)
-      --spawnPlayer(0, 1)
+      spawnPlayer(0, -1)
+      spawnPlayer(0, 1)
     -- start moving VERTICALLY
     elseif (math.abs(dy) > 0) and (not collisionY) then
       local f = useful.tri(dy > 0, useful.floor, useful.ceil)
@@ -138,8 +138,8 @@ function Player:update(dt, level, view)
       
       -- spawn clones
       spawnPlayer(0, -dy)
-      --spawnPlayer(-1, 0)
-      --spawnPlayer(1, 0)
+      spawnPlayer(-1, 0)
+      spawnPlayer(1, 0)
       
     elseif self.universe ~= 1 then
       self.purge = true
@@ -163,16 +163,16 @@ function Player:draw()
   end
     
   if self.universe == 1 then
-    love.graphics.setColor(255, 0, 0)
+    --love.graphics.setColor(255, 0, 0)
   elseif self.turnQueued then
     love.graphics.setColor(0, 0, 255)
   end
   love.graphics.rectangle("line", 
     self.x+4, self.y+4, self.w-8, self.h-8)
-    love.graphics.line(
+    --[[love.graphics.line(
       self.startX+self.w/2, self.startY+self.h/2, 
-        self.targetX+self.w/2, self.targetY+self.h/2)
-    
+        self.targetX+self.w/2, self.targetY+self.h/2)--]]
+  --love.graphics.print(self.universe, self.x+6, self.y+6)
   love.graphics.setColor(255, 255, 255)
   
 
