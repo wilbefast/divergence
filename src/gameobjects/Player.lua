@@ -89,6 +89,10 @@ function Player:eventCollision(other, level)
   elseif other.type == GameObject.TYPE.Exit then
     if (self.universe == 1) and (level.turnProgress == 0) then
       self.x, self.y = self.targetX, self.targetY
+      
+      other.purge = true
+      
+      
       level.victory = true
       GameObject.mapToAll(function(o) 
           if (o.type == GameObject.TYPE.Player)
@@ -96,7 +100,7 @@ function Player:eventCollision(other, level)
             o.purge = true
           end
         end)
-      other.purge = true
+      
     end
   end
 end

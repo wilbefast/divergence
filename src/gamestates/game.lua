@@ -52,7 +52,7 @@ function state:keypressed(key, uni)
       self.level.start = false
       
     elseif self.level.victory then
-      self.level_number = self.level_number + 1
+      --self.level_number = self.level_number + 1
       self:reloadLevel()
     end
   end
