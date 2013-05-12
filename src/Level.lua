@@ -54,19 +54,29 @@ local Level = Class
 --[[------------------------------------------------------------
 Game loop
 --]]--
+  
+function Level:queueTurn()
+  GameObject.mapToAll(function(o) o.turnQueued = true end)
+  self.turnQueued = true
+end
 
 function Level:update(dt)
+  print(GameObject.count())
   
-  if self.turnProgress > 0 then
+  if (self.turnProgress > 0) or self.turnQueued then
+    self.turnQueued = false
     self.turnProgress = self.turnProgress + dt
     if self.turnProgress > 1 then
       self.turnProgress = 0
+      GameObject.mapToAll(function(o) 
+      o.turnQueued = false 
+      o.x, o.y = o.targetX, o.targetY
+      o.startX, o.startY = o.x, o.y
+    end)
     end
   end
   
   GameObject.updateAll(dt, self)
-  
-  print(GameObject.count())
 end
 
 function Level:draw()

@@ -66,10 +66,10 @@ function Player:collidesType(type)
 end
 
 function Player:eventCollision(other, level)
+  
   if level.turnProgress == 0 then
-    
     if self.universe > other.universe then
-      self.turn = true
+      self.purge = true
     end
   end
 end
@@ -95,80 +95,71 @@ function Player:update(dt, level, view)
     = grid:pixelCollision(x, y + dy*self.h) 
     
   -- start turn
+  if ((self.universe == 1) and (level.turnProgress == 0))
+  or ((self.universe > 1) and self.turnQueued)  then
 
-  if level.turnProgress == 0 then
-    if (self.universe == 1) or self.turnQueued then
+    -- consume turn token
+    self.turnQueued = false
     
-      self.turnQueued = false
-      
-      -- reset start and end points
-      self.x, self.y = self.targetX, self.targetY
-      self.startX, self.startY = self.x, self.y
-      
-      -- clone creation function
-      function spawnPlayer(dirx, diry)
-        if not grid:pixelCollision(
-          self.x + dirx*self.w, 
-          self.y + diry*self.h) then
-            Player(self.x, self.y, dirx, diry)
-        end
-      end
-      
-      -- start moving HORIZONTALLY
-      if (math.abs(dx) > 0) and (not collisionX) then
-        local f = useful.tri(dx > 0, useful.floor, useful.ceil)
-        self.targetX = f(self.x, grid.tilew) + grid.tilew*dx
-        level.turnProgress = level.turnProgress + dt
-        
-        if self.universe == 1 then
-          GameObject.mapToAll(
-            function(o) 
-              if o.universe ~= 1 then
-                o.x, o.y = o.targetX, o.targetY
-                o.startX, o.startY = o.x, o.y
-              end
-          end)
-        end
-        
-        -- spawn clones
-        spawnPlayer(-dx, 0)
-        spawnPlayer(0, -1)
-        spawnPlayer(0, 1)
-      -- start moving VERTICALLY
-      elseif (math.abs(dy) > 0) and (not collisionY) then
-        local f = useful.tri(dy > 0, useful.floor, useful.ceil)
-        self.targetY = f(self.y, grid.tilew) + grid.tileh*dy
-        level.turnProgress = level.turnProgress + dt
-        
-        if self.universe == 1 then
-          GameObject.mapToAll(
-            function(o) 
-              if o.universe ~= 1 then
-                o.x, o.y = o.targetX, o.targetY
-                o.startX, o.startY = o.x, o.y
-              end
-          end)
-        end
-        
-        -- spawn clones
-        spawnPlayer(0, -dy)
-        spawnPlayer(-1, 0)
-        spawnPlayer(1, 0)
-      elseif self.universe ~= 1 then
-        self.purge = true
+    -- reset start and end points
+    self.x, self.y = self.targetX, self.targetY
+    self.startX, self.startY = self.x, self.y
+
+    -- clone creation function
+    function spawnPlayer(dirx, diry)
+      if not grid:pixelCollision(
+        self.x + dirx*self.w, 
+        self.y + diry*self.h) then
+          Player(self.x, self.y, dirx, diry)
       end
     end
-  else
-    self.x = useful.lerp(self.startX, self.targetX, 
-                          level.turnProgress)
-    self.y = useful.lerp(self.startY, self.targetY, 
-                          level.turnProgress)
+    
+    -- start moving HORIZONTALLY
+    if (math.abs(dx) > 0) and (not collisionX) then
+      local f = useful.tri(dx > 0, useful.floor, useful.ceil)
+      self.targetX = f(self.x, grid.tilew) + grid.tilew*dx
+      level.turnProgress = level.turnProgress + dt
+      
+      -- queue new turn
+      if self.universe == 1 then level:queueTurn() end
+      
+      -- spawn clones
+      spawnPlayer(-dx, 0)
+      --spawnPlayer(0, -1)
+      --spawnPlayer(0, 1)
+    -- start moving VERTICALLY
+    elseif (math.abs(dy) > 0) and (not collisionY) then
+      local f = useful.tri(dy > 0, useful.floor, useful.ceil)
+      self.targetY = f(self.y, grid.tilew) + grid.tileh*dy
+      level.turnProgress = level.turnProgress + dt
+      
+      -- queue new turn
+      if self.universe == 1 then level:queueTurn() end
+      
+      -- spawn clones
+      spawnPlayer(0, -dy)
+      --spawnPlayer(-1, 0)
+      --spawnPlayer(1, 0)
+      
+    elseif self.universe ~= 1 then
+      self.purge = true
+      -- spawn clones
+      spawnPlayer(0, -1)
+      spawnPlayer(-1, 0)
+      spawnPlayer(1, 0)
+      spawnPlayer(0, 1)
+    end
   end
+
+  self.x = useful.lerp(self.startX, self.targetX, 
+                        level.turnProgress)
+  self.y = useful.lerp(self.startY, self.targetY, 
+                        level.turnProgress)
 end
 
 function Player:draw()
   if DEBUG then
-    GameObject.draw(self)
+    --GameObject.draw(self)
   end
     
   if self.universe == 1 then
@@ -178,8 +169,13 @@ function Player:draw()
   end
   love.graphics.rectangle("line", 
     self.x+4, self.y+4, self.w-8, self.h-8)
+    love.graphics.line(
+      self.startX+self.w/2, self.startY+self.h/2, 
+        self.targetX+self.w/2, self.targetY+self.h/2)
+    
   love.graphics.setColor(255, 255, 255)
   
+
   --[[love.graphics.setColor(255, 0, 0)
     love.graphics.rectangle("line", 
       self.startX, self.startY, self.w, self.h)
