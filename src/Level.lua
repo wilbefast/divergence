@@ -65,6 +65,8 @@ function Level:update(dt)
   end
   
   GameObject.updateAll(dt, self)
+  
+  print(GameObject.count())
 end
 
 function Level:draw()

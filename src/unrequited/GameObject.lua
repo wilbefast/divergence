@@ -95,7 +95,17 @@ function GameObject.get(type, i)
 end
 
 function GameObject.count(type)
-  return #(GameObject.INSTANCES[type])
+  if type then
+    return #(GameObject.INSTANCES[type])
+  else
+    local count = 0
+    for _, objects_of_type 
+    in pairs(GameObject.INSTANCES) do
+      count = count + #(objects_of_type)
+    end
+    return count
+  end
+  
 end
 
 function GameObject.updateAll(dt, level, view)
@@ -118,7 +128,7 @@ function GameObject.updateAll(dt, level, view)
                 function(otherobject)
                   -- check collisions between objects
                   if object:isColliding(otherobject) then
-                    object:eventCollision(otherobject, self)
+                    object:eventCollision(otherobject, level)
                   end
                 end)
           end
@@ -139,6 +149,14 @@ function GameObject.drawAll(view)
           object:draw(view)
         end
     end)
+  end
+end
+
+function GameObject.mapToAll(f)
+  -- for each type of object
+  for t, object_type in pairs(GameObject.INSTANCES) do
+    -- for each object
+    useful.map(object_type, f)
   end
 end
 
@@ -312,7 +330,7 @@ GameObject.DEBUG_VIEW =
   draw = function(self, target)
     love.graphics.rectangle("line", 
         target.x, target.y, target.w, target.h)
-    love.graphics.print(target.name, 
+    love.graphics.print(target.id,--target.name, 
         target.x, target.y+32)
   end
 }
