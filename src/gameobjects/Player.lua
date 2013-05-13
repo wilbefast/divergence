@@ -131,6 +131,21 @@ function Player:update(dt, level, view)
   local collisionY 
     = grid:pixelCollision(x, y + dy*self.h) 
     
+  -- boxes ?
+  local box = nil
+  if collisionX 
+  and grid:pixelToTile(x + dx*self.w, y):isType("BOX")
+  and (not grid:pixelCollision(x + 2*dx*self.w, y)) then
+    collisionX = false
+    box = grid:pixelToTile(x + dx*self.w, y).contents
+  end
+  if collisionY 
+  and grid:pixelToTile(x, y + dy*self.h):isType("BOX")
+  and (not grid:pixelCollision(x, y + 2*dy*self.h) ) then
+    collisionY = false
+    box = grid:pixelToTile(x, y + dy*self.h).contents
+  end
+  
   -- start turn
   if ((self.universe == 1) and (level.turnProgress == 0))
   or ((self.universe > 1) and self.turnQueued)  then
@@ -141,6 +156,18 @@ function Player:update(dt, level, view)
     -- reset start and end points
     self.x, self.y = self.targetX, self.targetY
     self.startX, self.startY = self.x, self.y
+    
+    -- push box
+    if box then
+      box.startX, box.startY = box.x, box.y
+      box.tile:setType("EMPTY")
+      box.tile.contents = nil
+      box.targetX, box.targetY = box.x + dx*32, box.y + dy*32
+      box.tile = level.collisiongrid:pixelToTile(
+                box.targetX + box.w/2, box.targetY + box.h/2)
+      box.tile.contents = box
+      box.tile:setType("BOX")
+    end
 
     -- clone creation function
     function spawnPlayer(dirx, diry)

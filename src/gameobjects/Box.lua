@@ -23,12 +23,13 @@ Initialisation
 local Box = Class
 {
   type = GameObject.TYPE.new("Box"),
-  init = function(self, x, y)
+  init = function(self, x, y, universe)
     GameObject.init(self, x+8, y+8, 16, 16)
       self.startX = x
       self.startY = y
       self.targetX = x
       self.targetY = y
+      self.universe = universe or 1
   end,
 }
 Box:include(GameObject)

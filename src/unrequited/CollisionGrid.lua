@@ -125,7 +125,7 @@ function CollisionGrid:gridToTile(x, y)
   if self:validGridPos(x, y) then
     return self.tiles[x][y]
   else
-    return nil --FIXME return default tile
+    return nil --FIXME return default tile?
   end
 end
 
