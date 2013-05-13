@@ -266,6 +266,37 @@ return {
           properties = {}
         }
       }
+    },
+    {
+      type = "objectgroup",
+      name = "boxes",
+      visible = true,
+      opacity = 1,
+      properties = {},
+      objects = {
+        {
+          name = "",
+          type = "",
+          shape = "rectangle",
+          x = 224,
+          y = 256,
+          width = 32,
+          height = 32,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "",
+          type = "",
+          shape = "rectangle",
+          x = 128,
+          y = 160,
+          width = 32,
+          height = 32,
+          visible = true,
+          properties = {}
+        }
+      }
     }
   }
 }

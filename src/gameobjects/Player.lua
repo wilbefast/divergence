@@ -163,7 +163,6 @@ function Player:update(dt, level, view)
       spawnPlayer(-dx, 0)
       spawnPlayer(0, -1)
       spawnPlayer(0, 1)
-      --SpecialEffect(self.x, self.y, drawAppear)
       
     -- start moving VERTICALLY
     elseif (math.abs(dy) > 0) and (not collisionY) then
@@ -177,7 +176,6 @@ function Player:update(dt, level, view)
       spawnPlayer(0, -dy)
       spawnPlayer(-1, 0)
       spawnPlayer(1, 0)
-      --SpecialEffect(self.x, self.y, drawAppear)
       
     else
       -- moved into a wall
@@ -190,7 +188,6 @@ function Player:update(dt, level, view)
         spawnPlayer(-1, 0)
         spawnPlayer(1, 0)
         spawnPlayer(0, 1)
-        --SpecialEffect(self.x, self.y, drawAppear)
         
       elseif collisionX or collisionY then
         -- game over!
@@ -217,7 +214,7 @@ function Player:draw()
    --GameObject.draw(self)
   end
   love.graphics.setColor(255, 255, 255, 200)
-  love.graphics.draw(IMG_MAN, self.x, self.y)
+    love.graphics.draw(IMG_MAN, self.x, self.y)
   love.graphics.setColor(255, 255, 255, 255)
 end
 

@@ -91,13 +91,23 @@ function GameObject.purgeAll()
   GameObject.NEXT_ID = 1
 end
 
-function GameObject.get(type, i)
+function GameObject.get(typename, i)
   i = (i or 1)
+  local type = GameObject.TYPE[typename]
   local objects = GameObject.INSTANCES[type] 
   if objects and (i <= #objects) then
     return (GameObject.INSTANCES[type][i])
   else
     return nil
+  end
+end
+
+function GameObject.getAll(typename)
+  if typename then
+    return 
+      pairs(GameObject.INSTANCES[GameObject.TYPE[typename]])
+  else
+    return pairs(GameObject.INSTANCES)
   end
 end
 

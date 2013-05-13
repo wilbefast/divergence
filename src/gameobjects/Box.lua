@@ -13,53 +13,52 @@ Lesser General Public License for more details.
 --]]
 
 --[[------------------------------------------------------------
-IMPORTS
---]]------------------------------------------------------------
-
-local Class = require("hump/class")
-
---[[------------------------------------------------------------
-TILE CLASS
+BOX GAMEOBJECT
 --]]------------------------------------------------------------
 
 --[[------------------------------------------------------------
 Initialisation
---]]
+--]]--
 
-local Tile = Class
+local Box = Class
 {
+  type = GameObject.TYPE.new("Box"),
+  init = function(self, x, y)
+    GameObject.init(self, x+8, y+8, 16, 16)
+      self.startX = x
+      self.startY = y
+      self.targetX = x
+      self.targetY = y
+  end,
 }
+Box:include(GameObject)
 
--- types
-Tile.TYPE = {}
-
-Tile.TYPE.EMPTY = 1
-Tile.TYPE[1] = "EMPTY"
-
-Tile.TYPE.WALL = 2
-Tile.TYPE[2] = "WALL"
-
-Tile.TYPE.BOX = 3
-Tile.TYPE[3] = "BOX"
-
-Tile.init = function(self, type)
-  self.type = (type or Tile.TYPE.EMPTY)
-end
 
 --[[------------------------------------------------------------
-Accessors
---]]
+Game loop
+--]]--
 
-function Tile:isType(typename)
-  return (self.type == Tile.TYPE[typename])
+function Box:update(dt, level, view)
+  self.x = self.x or self.prevx
+  self.y = self.y or self.prevy
+  
+  -- move the box
+  self.x = useful.lerp(self.startX, self.targetX, 
+                        level.turnProgress)
+  self.y = useful.lerp(self.startY, self.targetY, 
+                        level.turnProgress)
 end
 
-function Tile:setType(typename)
-  self.type = Tile.TYPE[typename]
+function Box:draw()
+  love.graphics.setColor(255, 255, 0)
+  love.graphics.rectangle(
+    "fill", self.x + 4, self.y + 4, 24, 24)
+  love.graphics.setColor(255, 255, 255)
 end
 
 --[[------------------------------------------------------------
 EXPORT
 --]]------------------------------------------------------------
 
-return Tile
+
+return Box

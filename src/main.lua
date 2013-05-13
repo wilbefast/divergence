@@ -28,6 +28,7 @@ GameObject = require("unrequited/GameObject")
 Tile = require("unrequited/Tile")
 CollisionGrid = require("unrequited/CollisionGrid")
 
+Box = require("gameobjects/Box")
 Exit = require("gameobjects/Exit")
 SpecialEffect = require("gameobjects/SpecialEffect")
 Player = require("gameobjects/Player")
@@ -87,7 +88,7 @@ function keyreleased(key, uni)
 end
 
 MIN_DT = 1/60
-MAX_DT = 1/30
+MAX_DT = 1/10
 function love.update(dt)
   dt = useful.clamp(dt, MIN_DT, MAX_DT)
   

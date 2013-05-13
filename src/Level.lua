@@ -39,20 +39,31 @@ local Level = Class
     
     -- parse objects from levelfile
     for _, layer in ipairs(levelfile.layers) do
-      --! GENERATE *COLLISION* GRID
+      
+      function parse_objects(objects, constructor)
+        for i, object in ipairs(objects) do
+          self.player = constructor(object.x, object.y)
+        end
+      end
       if layer.type == "objectgroup" then
+        parse_objects(Player)
         if layer.name == "player" then
-          for i, object in ipairs(layer.objects) do
-            self.player = Player(object.x, object.y)
-          end
+          parse_objects(layer.objects, Player)
         elseif layer.name == "exit" then
-          for i, object in ipairs(layer.objects) do
-            Exit(object.x, object.y)
-          end
+          parse_objects(layer.objects, Exit)
+        elseif layer.name == "boxes" then
+          parse_objects(layer.objects, Box)
         end
       end
     end
     
+    -- initial box positions
+    self:recalculateBoxPositions()
+    
+    -- save the player object
+    self.player = GameObject.get("Player")
+    
+    -- don't immediately accept input
     self.start = true
     
     -- pseudo-turn-based game
@@ -63,6 +74,19 @@ local Level = Class
 --[[------------------------------------------------------------
 Game loop
 --]]--
+  
+function Level:recalculateBoxPositions()
+  -- cache box positions in tilegrid
+  self.collisiongrid:map(function(tile)
+    if tile:isType("BOX") then
+      tile:setType("EMPTY")
+    end
+  end)
+  for i, box in GameObject.getAll("Box") do
+    self.collisiongrid:pixelToTile(box.x, box.y)
+                        :setType("BOX")
+  end
+end
   
 function Level:queueTurn()
   GameObject.mapToAll(function(o) 
@@ -81,8 +105,12 @@ function Level:update(dt)
     self.turnProgress = self.turnProgress + dt
     if self.turnProgress > 1 then
       
+      -- end of current turn
       self.turnProgress = 0
       
+      self:recalculateBoxPositions()
+        
+      -- victory if now Exit objects remain
       if GameObject.count(GameObject.TYPE.Exit) == 0 then
         self.victory = true
         GameObject.mapToAll(function(o) 

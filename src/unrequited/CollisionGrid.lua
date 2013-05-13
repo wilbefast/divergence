@@ -68,6 +68,10 @@ local CollisionGrid = Class
 Map functions to all or part of the grid
 --]]--
 
+function CollisionGrid:map(f)
+  self:mapRectangle(1, 1, self.w, self.h, f)
+end
+
 function CollisionGrid:mapRectangle(startx, starty, w, h, f)
   for x = startx, startx + w - 1 do
     for y = starty, starty + h - 1 do
@@ -100,9 +104,14 @@ function CollisionGrid:draw(view)
   
   for x = start_x, end_x do
     for y = start_y, end_y do
-      if self.tiles[x][y]:isWall()  then
+      if self.tiles[x][y]:isType("WALL")  then
         love.graphics.rectangle("fill", (x-1)*self.tilew,
             (y-1)*self.tileh, self.tilew, self.tileh)
+      elseif self.tiles[x][y]:isType("BOX")  then
+        love.graphics.setColor(100, 100, 100)
+        love.graphics.rectangle("fill", (x-1)*self.tilew,
+          (y-1)*self.tileh, self.tilew, self.tileh)
+        love.graphics.setColor(255, 255, 255)
       end
     end
   end
@@ -134,11 +143,13 @@ Conversion
 --]]--
 
 function CollisionGrid:pixelToGrid(x, y)
-  return math.floor(x / self.tilew) + 1, math.floor(y / self.tileh) +1
+  return math.floor(x / self.tilew) + 1, 
+          math.floor(y / self.tileh) +1
 end
 
 function CollisionGrid:gridToPixel(x, y)
-  return (x-1) * self.tilew, (y-1) * self.tileh
+  return (x-1) * self.tilew, 
+          (y-1) * self.tileh
 end
 
 
