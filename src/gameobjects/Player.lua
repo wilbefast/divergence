@@ -131,19 +131,43 @@ function Player:update(dt, level, view)
   local collisionY 
     = grid:pixelCollision(x, y + dy*self.h) 
     
-  -- boxes ?
+  -- collision with a box
   local box = nil
-  if collisionX 
-  and grid:pixelToTile(x + dx*self.w, y):isType("BOX")
-  and (not grid:pixelCollision(x + 2*dx*self.w, y)) then
-    collisionX = false
+  if collisionX then
     box = grid:pixelToTile(x + dx*self.w, y).contents
+    if box then
+      -- if box is present in a different universe
+      if box.universe and (box.universe ~= self.universe) then
+        -- pass through the box as though it doesn't exist
+        box = nil
+        collisionX = false
+      -- if box is present in all universe or my universe
+      -- and there is a free space behind it
+      elseif not grid:pixelCollision(x + 2*dx*self.w, y) then
+        if not box.universe then
+          box = Box(box.x, box.y, self.universe)
+        end
+        collisionX = false
+      end
+    end
   end
-  if collisionY 
-  and grid:pixelToTile(x, y + dy*self.h):isType("BOX")
-  and (not grid:pixelCollision(x, y + 2*dy*self.h) ) then
-    collisionY = false
+  if collisionY then
     box = grid:pixelToTile(x, y + dy*self.h).contents
+    if box then
+      -- if box is present in a different universe
+      if box.universe and (box.universe ~= self.universe) then
+        -- pass through the box as though it doesn't exist
+        box = nil
+        collisionY = false
+      -- if box is present in all universe or my universe
+      -- and there is a free space behind it
+      elseif not grid:pixelCollision(x, y + 2*dy*self.h) then
+        if not box.universe then
+          box = Box(box.x, box.y, self.universe)
+        end
+        collisionY = false
+      end
+    end
   end
   
   -- start turn
@@ -160,13 +184,19 @@ function Player:update(dt, level, view)
     -- push box
     if box then
       box.startX, box.startY = box.x, box.y
-      box.tile:setType("EMPTY")
-      box.tile.contents = nil
-      box.targetX, box.targetY = box.x + dx*32, box.y + dy*32
-      box.tile = level.collisiongrid:pixelToTile(
-                box.targetX + box.w/2, box.targetY + box.h/2)
-      box.tile.contents = box
-      box.tile:setType("BOX")
+      if box.tile then
+        box.tile:setType("EMPTY")
+        box.tile.contents = nil
+        box.targetX, box.targetY = box.x + dx*32, box.y + dy*32
+        box.tile = level.collisiongrid:pixelToTile(
+                  box.targetX + box.w/2, box.targetY + box.h/2)
+        if box.tile:isType("EMPTY") then
+          box.tile.contents = box
+          box.tile:setType("BOX")
+        else
+          box.tile = nil
+        end
+      end
     end
 
     -- clone creation function

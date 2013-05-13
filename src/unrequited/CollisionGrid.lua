@@ -107,12 +107,13 @@ function CollisionGrid:draw(view)
       if self.tiles[x][y]:isType("WALL")  then
         love.graphics.rectangle("fill", (x-1)*self.tilew,
             (y-1)*self.tileh, self.tilew, self.tileh)
-      elseif self.tiles[x][y]:isType("BOX")  then
+      end
+      --[[elseif self.tiles[x][y]:isType("BOX")  then
         love.graphics.setColor(100, 100, 100)
         love.graphics.rectangle("fill", (x-1)*self.tilew,
           (y-1)*self.tileh, self.tilew, self.tileh)
         love.graphics.setColor(255, 255, 255)
-      end
+      end--]]
     end
   end
 end
