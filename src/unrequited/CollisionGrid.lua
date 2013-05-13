@@ -176,16 +176,16 @@ end
 Basic collision tests
 --]]--
 
-function CollisionGrid:gridCollision(x, y, type)
-  type = (type or Tile.TYPE.WALL)
-  return (self:gridToTile(x, y).type == type)
+function CollisionGrid:gridCollision(x, y, typename)
+  typename = (typename or "WALL")
+  return (self:gridToTile(x, y).type 
+            == Tile.TYPE[typename])
 end
 
 function CollisionGrid:pixelCollision(x, y, type)
   type = (type or Tile.TYPE.WALL)
   local tile = self:pixelToTile(x, y)
-  return ((not tile) or ((tile.type > 1) 
-                        and (tile.type <= type)))
+  return ((not tile) or (not tile:isType("EMPTY")))
 end
 
 --[[----------------------------------------------------------------------------
