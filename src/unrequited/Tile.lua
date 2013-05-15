@@ -39,9 +39,6 @@ Tile.TYPE[1] = "EMPTY"
 Tile.TYPE.WALL = 2
 Tile.TYPE[2] = "WALL"
 
-Tile.TYPE.BOX = 3
-Tile.TYPE[3] = "BOX"
-
 Tile.init = function(self, type)
   self.type = (type or Tile.TYPE.EMPTY)
 end

@@ -57,9 +57,6 @@ local Level = Class
       end
     end
     
-    -- initial box positions
-    self:recalculateBoxPositions()
-    
     -- save the player object
     self.player = GameObject.get("Player")
     
@@ -74,25 +71,6 @@ local Level = Class
 --[[------------------------------------------------------------
 Game loop
 --]]--
-  
-function Level:recalculateBoxPositions()
-  -- cache box positions in tilegrid
-  self.collisiongrid:map(function(tile)
-    if tile:isType("BOX") then
-      tile:setType("EMPTY")
-      if tile.contents then
-        tile.contents.tile = nil
-        tile.contents = nil
-      end
-    end
-  end)
-  for i, box in GameObject.getAll("Box") do
-    local tile = self.collisiongrid:pixelToTile(box.x, box.y)
-    tile:setType("BOX")
-    tile.contents = box
-    box.tile = tile
-  end
-end
   
 function Level:queueTurn()
   GameObject.mapToAll(function(o) 
@@ -113,9 +91,7 @@ function Level:update(dt)
       
       -- end of current turn
       self.turnProgress = 0
-      
-      --self:recalculateBoxPositions()
-        
+       
       -- victory if now Exit objects remain
       if GameObject.count(GameObject.TYPE.Exit) == 0 then
         self.victory = true

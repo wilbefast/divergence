@@ -119,6 +119,8 @@ function Player:update(dt, level, view)
   
   -- cache
   local grid = GameObject.COLLISIONGRID
+  
+  -- movement is either all horizontal or all vertical
   local x, y = self:centreX(), self:centreY()
   local dx, dy = 0, 0
   if self.universe == 1 then
@@ -126,13 +128,15 @@ function Player:update(dt, level, view)
   else
     dx, dy = self.dx, self.dy
   end
-  local collisionX 
-    = grid:pixelCollision(x + dx*self.w, y)
-  local collisionY 
-    = grid:pixelCollision(x, y + dy*self.h) 
+  if dx ~= 0 then
+    dy = 0
+  end
+  
+  local collision
+    = grid:pixelCollision(x + dx*self.w, y + dy*self.h)
     
   -- collision with a box
-  local box = nil
+  --[[local box = nil
   if collisionX then
     box = grid:pixelToTile(x + dx*self.w, y).contents
     if box then
@@ -168,7 +172,7 @@ function Player:update(dt, level, view)
         collisionY = false
       end
     end
-  end
+  end--]]
   
   -- start turn
   if ((self.universe == 1) and (level.turnProgress == 0))
@@ -182,7 +186,7 @@ function Player:update(dt, level, view)
     self.startX, self.startY = self.x, self.y
     
     -- push box
-    if box then
+    --[[if box then
       box.startX, box.startY = box.x, box.y
       if box.tile then
         box.tile:setType("EMPTY")
@@ -197,7 +201,7 @@ function Player:update(dt, level, view)
           box.tile = nil
         end
       end
-    end
+    end--]]
 
     -- clone creation function
     function spawnPlayer(dirx, diry)
@@ -208,53 +212,45 @@ function Player:update(dt, level, view)
       end
     end
     
-    -- start moving HORIZONTALLY
-    if (math.abs(dx) > 0) and (not collisionX) then
-      local f = useful.tri(dx > 0, useful.floor, useful.ceil)
-      self.targetX = f(self.x, grid.tilew) + grid.tilew*dx
+    -- start moving
+    if (dx ~= 0) or (dy ~= 0) then
       
-      -- queue new turn
-      if self.universe == 1 then level:queueTurn() end
-      
-      -- spawn clones
-      spawnPlayer(-dx, 0)
-      spawnPlayer(0, -1)
-      spawnPlayer(0, 1)
-      
-    -- start moving VERTICALLY
-    elseif (math.abs(dy) > 0) and (not collisionY) then
-      local f = useful.tri(dy > 0, useful.floor, useful.ceil)
-      self.targetY = f(self.y, grid.tilew) + grid.tileh*dy
-      
-      -- queue new turn
-      if self.universe == 1 then level:queueTurn() end
-      
-      -- spawn clones
-      spawnPlayer(0, -dy)
-      spawnPlayer(-1, 0)
-      spawnPlayer(1, 0)
-      
-    else
-      -- moved into a wall
-      if self.universe > 1 then
-        -- destroy
-        self.purge = true
+      if not collision then
+        local f = useful.tri(dx > 0, useful.floor, useful.ceil)
+        self.targetX = f(self.x, grid.tilew) + grid.tilew*dx
+        f = useful.tri(dy > 0, useful.floor, useful.ceil)
+        self.targetY = f(self.y, grid.tileh) + grid.tileh*dy
+        
+        -- queue new turn
+        if self.universe == 1 then level:queueTurn() end
         
         -- spawn clones
-        spawnPlayer(0, -1)
-        spawnPlayer(-1, 0)
-        spawnPlayer(1, 0)
-        spawnPlayer(0, 1)
+        spawnPlayer(-dx, -dy)
+        spawnPlayer(dy, -dx)
+        spawnPlayer(-dy, dx)
         
-      elseif collisionX or collisionY then
-        -- game over!
-        level.gameOver = true
-        GameObject.mapToAll(function(o) 
-        if (o.type == GameObject.TYPE.Player)
-        and (o.universe > 1)then
-          o.purge = true
+      else -- collision == true
+        -- moved into a wall
+        if self.universe > 1 then
+          -- destroy
+          self.purge = true
+          
+          -- spawn clones
+          spawnPlayer(0, -1)
+          spawnPlayer(-1, 0)
+          spawnPlayer(1, 0)
+          spawnPlayer(0, 1)
+          
+        else
+          -- game over!
+          level.gameOver = true
+          GameObject.mapToAll(function(o) 
+            if (o.type == GameObject.TYPE.Player)
+            and (o.universe > 1)then
+              o.purge = true
+            end
+          end)
         end
-      end)
       end
     end
   end
