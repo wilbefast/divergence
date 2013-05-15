@@ -29,20 +29,17 @@ local Box = Class
       self.startY = y
       self.targetX = x
       self.targetY = y
-      self.universe = universe or 1
+      self.universe = (universe or ALL_UNIVERSES)
+      self.clones = {}
   end,
 }
 Box:include(GameObject)
-
 
 --[[------------------------------------------------------------
 Game loop
 --]]--
 
 function Box:update(dt, level, view)
-  self.x = self.x or self.prevx
-  self.y = self.y or self.prevy
-  
   -- move the box
   self.x = useful.lerp(self.startX, self.targetX, 
                         level.turnProgress)
@@ -54,6 +51,12 @@ function Box:draw()
   love.graphics.setColor(255, 255, 0)
   love.graphics.rectangle(
     "fill", self.x + 4, self.y + 4, 24, 24)
+    
+    
+  love.graphics.setColor(0, 0, 0)
+  love.graphics.print(self.universe, self.x + 8, self.y + 8)
+
+  
   love.graphics.setColor(255, 255, 255)
 end
 

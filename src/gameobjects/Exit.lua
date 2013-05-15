@@ -34,11 +34,6 @@ Exit:include(GameObject)
 Game loop
 --]]--
 
-function Exit:update()
-  self.x = self.x or self.prevx
-  self.y = self.y or self.prevy
-end
-
 function Exit:draw()
   love.graphics.setColor(0, 255, 0)
   love.graphics.rectangle(

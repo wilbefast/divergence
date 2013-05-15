@@ -71,11 +71,13 @@ Collision
 
 function Player:collidesType(type)
   return ((type == GameObject.TYPE.Player)
-      or (type == GameObject.TYPE.Exit))
+      or (type == GameObject.TYPE.Exit)
+      or (type == GameObject.TYPE.Box))
 end
 
 function Player:eventCollision(other, level)
   
+  -- Collision with player
   if other.type == GameObject.TYPE.Player then
     if (self.x == other.x)
     and (self.y == other.y)
@@ -84,10 +86,27 @@ function Player:eventCollision(other, level)
       self.purge = true
     end
     
+  -- Collision with exit
   elseif other.type == GameObject.TYPE.Exit then
     if self.universe == 1 then
       other.purge = true
     end
+  
+  -- Collision with box
+  elseif other.type == GameObject.TYPE.Box then
+    
+    -- create a clone in MY universe
+    if (other.universe == ALL_UNIVERSES) 
+    and (not other.clones[self.universe]) then
+      other.clones[self.universe] = 
+        Box(other.x, other.y, self.universe)
+        
+    -- ONLY push boxes in MY universe
+    elseif other.universe == self.universe then
+      local dx, dy = other.x - self.x, other.y - self.y
+      other.y = other.y + 64
+    end
+    
   end
 end
 
@@ -205,7 +224,9 @@ function Player:update(dt, level, view)
 
     -- clone creation function
     function spawnPlayer(dirx, diry)
-      if not grid:pixelCollision(
+      if not CREATE_CLONES then
+        return
+      elseif not grid:pixelCollision(
         self.x + dirx*self.w, 
         self.y + diry*self.h) then
           Player(self.x, self.y, dirx, diry)

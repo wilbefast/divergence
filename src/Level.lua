@@ -73,10 +73,8 @@ Game loop
 --]]--
   
 function Level:queueTurn()
-  GameObject.mapToAll(function(o) 
-    if o.type == GameObject.TYPE.Player then
+  GameObject.mapToType("Player", function(o) 
       o.turnQueued = true
-    end
   end)
   self.turnQueued = true
 end
@@ -103,10 +101,10 @@ function Level:update(dt)
           end)
       end
         
-      GameObject.mapToAll(function(o) 
-      o.turnQueued = false 
-      o.x, o.y = o.targetX, o.targetY
-      o.startX, o.startY = o.x, o.y
+      GameObject.mapToType("Player", function(o) 
+        o.turnQueued = false 
+        o.x, o.y = o.targetX, o.targetY
+        o.startX, o.startY = o.x, o.y
     end)
     end
   end

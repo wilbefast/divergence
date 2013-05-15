@@ -80,6 +80,10 @@ function GameObject:typename()
   return GameObject.TYPE[self.type]
 end
 
+function GameObject:isType(typename)
+  return (self.type == GameObject.TYPE[typename])
+end
+
 --[[------------------------------------------------------------
 CONTAINER
 --]]------------------------------------------------------------
@@ -171,10 +175,16 @@ end
 
 function GameObject.mapToAll(f)
   -- for each type of object
-  for t, object_type in pairs(GameObject.INSTANCES) do
+  for _, type_instances in pairs(GameObject.INSTANCES) do
     -- for each object
-    useful.map(object_type, f)
+    useful.map(type_instances, f)
   end
+end
+
+function GameObject.mapToType(typename, f)
+  local type_instances = 
+    GameObject.INSTANCES[GameObject.TYPE[typename]]
+  useful.map(type_instances, f)
 end
 
 
