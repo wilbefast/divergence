@@ -45,12 +45,12 @@ game = require("gamestates/game")
 GLOBAL SETTINGS
 --]]------------------------------------------------------------
 
-DEBUG = true
+DEBUG = false
 audio.mute = DEBUG
 
 -- constants
 ALL_UNIVERSES = 0
-CREATE_CLONES = false
+CREATE_CLONES = true
 
 --[[------------------------------------------------------------
 LOVE CALLBACKS

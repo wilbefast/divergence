@@ -24,7 +24,7 @@ local Exit = Class
 {
   type = GameObject.TYPE.new("Exit"),
   init = function(self, x, y)
-    GameObject.init(self, x+8, y+8, 16, 16)
+    GameObject.init(self, x + 8, y + 8, 16, 16)
   end,
 }
 Exit:include(GameObject)
@@ -39,6 +39,9 @@ function Exit:draw()
   love.graphics.rectangle(
     "fill", self.x - 4, self.y - 4, 24, 24)
   love.graphics.setColor(255, 255, 255)
+  
+  -- default
+  GameObject.draw(self)
 end
 
 --[[------------------------------------------------------------

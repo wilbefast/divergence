@@ -98,13 +98,22 @@ function Player:eventCollision(other, level)
     -- create a clone in MY universe
     if (other.universe == ALL_UNIVERSES) 
     and (not other.clones[self.universe]) then
-      other.clones[self.universe] = 
-        Box(other.x, other.y, self.universe)
+      other:cloneToUniverse(self.universe)
         
     -- ONLY push boxes in MY universe
     elseif other.universe == self.universe then
-      local dx, dy = other.x - self.x, other.y - self.y
-      other.y = other.y + 64
+      local dx, dy = other:centreX() - self:centreX(), 
+                      other:centreY() - self:centreY()
+      if math.abs(dx) < self.w/2 then
+        dx = 0
+      end
+      if math.abs(dy) < self.h/2 then
+        dy = 0
+      end
+      other.targetX = 
+        self.targetX + 8 + useful.sign(dx)*self.w
+      other.targetY = 
+        self.targetY + 8 + useful.sign(dy)*self.h
     end
     
   end
@@ -201,27 +210,10 @@ function Player:update(dt, level, view)
     self.turnQueued = false
     
     -- reset start and end points
+    self.isMoving = false
     self.x, self.y = self.targetX, self.targetY
     self.startX, self.startY = self.x, self.y
     
-    -- push box
-    --[[if box then
-      box.startX, box.startY = box.x, box.y
-      if box.tile then
-        box.tile:setType("EMPTY")
-        box.tile.contents = nil
-        box.targetX, box.targetY = box.x + dx*32, box.y + dy*32
-        box.tile = level.collisiongrid:pixelToTile(
-                  box.targetX + box.w/2, box.targetY + box.h/2)
-        if box.tile:isType("EMPTY") then
-          box.tile.contents = box
-          box.tile:setType("BOX")
-        else
-          box.tile = nil
-        end
-      end
-    end--]]
-
     -- clone creation function
     function spawnPlayer(dirx, diry)
       if not CREATE_CLONES then
@@ -244,6 +236,7 @@ function Player:update(dt, level, view)
         
         -- queue new turn
         if self.universe == 1 then level:queueTurn() end
+        self.isMoving = true
         
         -- spawn clones
         spawnPlayer(-dx, -dy)

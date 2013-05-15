@@ -24,40 +24,57 @@ local Box = Class
 {
   type = GameObject.TYPE.new("Box"),
   init = function(self, x, y, universe)
-    GameObject.init(self, x+8, y+8, 16, 16)
-      self.startX = x
-      self.startY = y
-      self.targetX = x
-      self.targetY = y
+    GameObject.init(self, x + 8, y + 8, 16, 16)
+      self.startX = self.x
+      self.startY = self.y
+      self.targetX = self.x
+      self.targetY = self.y
       self.universe = (universe or ALL_UNIVERSES)
       self.clones = {}
   end,
 }
 Box:include(GameObject)
 
+function Box:cloneToUniverse(universe)
+  if self.clones[universe] then
+    print("Clone already exists in this universe!")
+    return
+  end
+  local clone = Box(self.x - 8, self.y -8, universe)
+  self.clones[universe] = clone
+  return clone
+end
+
 --[[------------------------------------------------------------
 Game loop
 --]]--
 
 function Box:update(dt, level, view)
-  -- move the box
-  self.x = useful.lerp(self.startX, self.targetX, 
-                        level.turnProgress)
-  self.y = useful.lerp(self.startY, self.targetY, 
-                        level.turnProgress)
+  if level.turnProgress == 0 then
+    self.x, self.y = self.targetX, self.targetY
+    self.startX, self.startY = self.x, self.y
+
+  else
+    -- move the box
+    self.x = useful.lerp(self.startX, self.targetX, 
+                          level.turnProgress)
+    self.y = useful.lerp(self.startY, self.targetY, 
+                          level.turnProgress)
+  end
 end
 
 function Box:draw()
-  love.graphics.setColor(255, 255, 0)
-  love.graphics.rectangle(
-    "fill", self.x + 4, self.y + 4, 24, 24)
-    
-    
-  love.graphics.setColor(0, 0, 0)
-  love.graphics.print(self.universe, self.x + 8, self.y + 8)
-
   
-  love.graphics.setColor(255, 255, 255)
+  local alpha = 
+    useful.tri(self.universe == ALL_UNIVERSES, 255, 100)
+  
+  love.graphics.setColor(255, 255, 0, alpha)
+  love.graphics.rectangle(
+    "fill", self.x - 4, self.y - 4, 24, 24)
+  
+  -- default
+  GameObject.draw(self)
+  
 end
 
 --[[------------------------------------------------------------
