@@ -259,6 +259,11 @@ function GameObject:isColliding(other)
   return true
 end
 
+function GameObject:isCollidingPoint(x, y)
+  return (x >= self.x and x <= self.x + self.w
+        and y >= self.y and y <= self.y + self.h)
+end
+
 
 --[[------------------------------------------------------------
 Game loop

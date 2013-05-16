@@ -114,6 +114,11 @@ function Player:eventCollision(other, level)
         self.targetX + 8 + useful.sign(dx)*self.w
       other.targetY = 
         self.targetY + 8 + useful.sign(dy)*self.h
+        
+      --GameObject.COLLISIONGRID:collision(other,
+        --  other.targetX, other.targetY)
+      
+        
     end
     
   end
@@ -162,45 +167,31 @@ function Player:update(dt, level, view)
   
   local collision
     = grid:pixelCollision(x + dx*self.w, y + dy*self.h)
-    
-  -- collision with a box
-  --[[local box = nil
-  if collisionX then
-    box = grid:pixelToTile(x + dx*self.w, y).contents
-    if box then
-      -- if box is present in a different universe
-      if box.universe and (box.universe ~= self.universe) then
-        -- pass through the box as though it doesn't exist
-        box = nil
-        collisionX = false
-      -- if box is present in all universe or my universe
-      -- and there is a free space behind it
-      elseif not grid:pixelCollision(x + 2*dx*self.w, y) then
-        if not box.universe then
-          box = Box(box.x, box.y, self.universe)
-        end
-        collisionX = false
+
+  local fx, fy = useful.tri(dx > 0, useful.floor, useful.ceil),
+                  useful.tri(dy > 0, useful.floor, useful.ceil)
+  desiredX, desiredY = fx(self.x, grid.tilew) + grid.tilew*dx,
+                       fy(self.y, grid.tileh) + grid.tileh*dy
+  
+  -- check for collision induced by pushing a box into a wall
+  if not collision then -- if not already colliding
+    GameObject.mapToType("Box", function(box)
+      if (not collision) -- break on first collision
+      and ((box.universe == ALL_UNIVERSES) 
+        or (box.universe == self.universe))
+      and box:isCollidingPoint(desiredX + grid.tilew/2, 
+          desiredY + grid.tileh/2) 
+      then
+        -- as soon as collision is return we stop
+        collision = grid:pixelCollision(x + 2*dx*self.w, 
+                                y + 2*dy*self.h)
       end
-    end
+    end)
   end
-  if collisionY then
-    box = grid:pixelToTile(x, y + dy*self.h).contents
-    if box then
-      -- if box is present in a different universe
-      if box.universe and (box.universe ~= self.universe) then
-        -- pass through the box as though it doesn't exist
-        box = nil
-        collisionY = false
-      -- if box is present in all universe or my universe
-      -- and there is a free space behind it
-      elseif not grid:pixelCollision(x, y + 2*dy*self.h) then
-        if not box.universe then
-          box = Box(box.x, box.y, self.universe)
-        end
-        collisionY = false
-      end
-    end
-  end--]]
+  
+  if (self.universe > 1) and collision then
+    purge = true
+  end
   
   -- start turn
   if ((self.universe == 1) and (level.turnProgress == 0))
@@ -225,35 +216,30 @@ function Player:update(dt, level, view)
       end
     end
     
-    -- start moving
+    -- attempt to start moving
     if (dx ~= 0) or (dy ~= 0) then
       
       if not collision then
-        local f = useful.tri(dx > 0, useful.floor, useful.ceil)
-        self.targetX = f(self.x, grid.tilew) + grid.tilew*dx
-        f = useful.tri(dy > 0, useful.floor, useful.ceil)
-        self.targetY = f(self.y, grid.tileh) + grid.tileh*dy
-        
+        -- move out!
+        self.targetX, self.targetY = desiredX, desiredY
         -- queue new turn
         if self.universe == 1 then level:queueTurn() end
         self.isMoving = true
-        
         -- spawn clones
         spawnPlayer(-dx, -dy)
         spawnPlayer(dy, -dx)
         spawnPlayer(-dy, dx)
         
       else -- collision == true
-        -- moved into a wall
+      
+        -- collision with a wall
         if self.universe > 1 then
           -- destroy
           self.purge = true
-          
           -- spawn clones
-          spawnPlayer(0, -1)
-          spawnPlayer(-1, 0)
-          spawnPlayer(1, 0)
-          spawnPlayer(0, 1)
+          spawnPlayer(-dx, -dy)
+          spawnPlayer(dy, -dx)
+          spawnPlayer(-dy, dx)
           
         else
           -- game over!

@@ -65,7 +65,7 @@ function scaling:setup(desired_w, desired_h, fullscreen)
   for i, m in ipairs(modes) do
     
     if DEBUG then
-      m = modes[math.floor(#modes/4)]
+      m = modes[math.floor(#modes/2)]
     end
     
     -- try to set the resolution
