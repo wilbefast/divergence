@@ -30,19 +30,12 @@ local Box = Class
       self.targetX = self.x
       self.targetY = self.y
       self.universe = (universe or ALL_UNIVERSES)
-      self.clones = {}
   end,
 }
 Box:include(GameObject)
 
 function Box:cloneToUniverse(universe)
-  if self.clones[universe] then
-    print("Clone already exists in this universe!")
-    return
-  end
-  local clone = Box(self.x - 8, self.y -8, universe)
-  self.clones[universe] = clone
-  return clone
+  return Box(self.x - 8, self.y -8, universe)
 end
 
 --[[------------------------------------------------------------

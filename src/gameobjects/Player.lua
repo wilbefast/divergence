@@ -57,6 +57,7 @@ local Player = Class
       SpecialEffect(self.x, self.y, drawAppear)
     end
     self.universe = Player.next_universe
+    self.boxes = {} 
     Player.next_universe = Player.next_universe + 1
   end,
       
@@ -97,8 +98,9 @@ function Player:eventCollision(other, level)
     
     -- create a clone in MY universe
     if (other.universe == ALL_UNIVERSES) 
-    and (not other.clones[self.universe]) then
-      other:cloneToUniverse(self.universe)
+    and (not self.boxes[other]) then
+      self.boxes[other] = 
+        other:cloneToUniverse(self.universe)
         
     -- ONLY push boxes in MY universe
     elseif other.universe == self.universe then
@@ -129,6 +131,22 @@ function Player:eventCollision(other, level)
 end
 
 --[[------------------------------------------------------------
+CREATE
+--]]--
+
+function Player:cloneWithDirection(dx, dy)
+  if CREATE_CLONES and 
+  (not GameObject.COLLISIONGRID:pixelCollision(
+    self.x + dx*self.w, self.y + dy*self.h)) 
+  then
+      local clone = Player(self.x, self.y, dx, dy)
+      useful.copyContents(self.boxes, clone.boxes)
+      
+      return clone
+  end
+end
+
+--[[------------------------------------------------------------
 Destroy
 --]]--
 
@@ -138,9 +156,9 @@ function Player:collisionDeath(level, dx, dy)
     -- destroy
     self.purge = true
     -- spawn clones
-    spawnPlayer(-dx, -dy)
-    spawnPlayer(dy, -dx)
-    spawnPlayer(-dy, dx)
+    self:cloneWithDirection(-dx, -dy)
+    self:cloneWithDirection(dy, -dx)
+    self:cloneWithDirection(-dy, dx)
 
     else
     -- game over!
@@ -202,22 +220,6 @@ function Player:update(dt, level, view)
   desiredX, desiredY = fx(self.x, grid.tilew) + grid.tilew*dx,
                        fy(self.y, grid.tileh) + grid.tileh*dy
   
-  -- check for collision induced by pushing a box into a wall
-  --[[if not collision then -- if not already colliding
-    GameObject.mapToType("Box", function(box)
-      if (not collision) -- break on first collision
-      and ((box.universe == ALL_UNIVERSES) 
-        or (box.universe == self.universe))
-      and box:isCollidingPoint(desiredX + grid.tilew/2, 
-          desiredY + grid.tileh/2) 
-      then
-        -- as soon as collision is return we stop
-        collision = grid:pixelCollision(x + 2*dx*self.w, 
-                                y + 2*dy*self.h)
-      end
-    end)
-  end--]]
-  
   if (self.universe > 1) and collision then
     purge = true
   end
@@ -234,17 +236,6 @@ function Player:update(dt, level, view)
     self.x, self.y = self.targetX, self.targetY
     self.startX, self.startY = self.x, self.y
     
-    -- clone creation function
-    function spawnPlayer(dirx, diry)
-      if not CREATE_CLONES then
-        return
-      elseif not grid:pixelCollision(
-        self.x + dirx*self.w, 
-        self.y + diry*self.h) then
-          Player(self.x, self.y, dirx, diry)
-      end
-    end
-    
     -- attempt to start moving
     if (dx ~= 0) or (dy ~= 0) then
       
@@ -255,9 +246,9 @@ function Player:update(dt, level, view)
         if self.universe == 1 then level:queueTurn() end
         self.isMoving = true
         -- spawn clones
-        spawnPlayer(-dx, -dy)
-        spawnPlayer(dy, -dx)
-        spawnPlayer(-dy, dx)
+        self:cloneWithDirection(-dx, -dy)
+        self:cloneWithDirection(dy, -dx)
+        self:cloneWithDirection(-dy, dx)
         
       else -- collision == true
         self:collisionDeath(level, dx, dy)

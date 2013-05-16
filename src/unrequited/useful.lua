@@ -158,4 +158,10 @@ function useful.lerp(a, b, inter)
   return ((1-inter)*a + inter*b)
 end
 
+function useful.copyContents(source, dest)
+  for i, v in pairs(source) do
+    dest[i] = v
+  end
+end
+
 return useful
