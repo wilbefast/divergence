@@ -115,8 +115,12 @@ function Player:eventCollision(other, level)
       other.targetY = 
         self.targetY + 8 + useful.sign(dy)*self.h
         
-      --GameObject.COLLISIONGRID:collision(other,
-        --  other.targetX, other.targetY)
+      -- pushing a box into a wall results in DEATH :D
+      if GameObject.COLLISIONGRID:collision(other,
+        other.targetX, other.targetY) then
+          other.targetX, other.targetY = other.x, other.y
+          self:collisionDeath(level, dx, dy)
+      end
       
         
     end
@@ -127,6 +131,31 @@ end
 --[[------------------------------------------------------------
 Destroy
 --]]--
+
+function Player:collisionDeath(level, dx, dy)
+  -- collision with a wall
+  if self.universe > 1 then
+    -- destroy
+    self.purge = true
+    -- spawn clones
+    spawnPlayer(-dx, -dy)
+    spawnPlayer(dy, -dx)
+    spawnPlayer(-dy, dx)
+
+    else
+    -- game over!
+    level.gameOver = true
+    -- jump back to start
+    self.targetX, self.targetY = self.x, self.y
+    -- destroy all others
+    GameObject.mapToAll(function(o) 
+      if (o.type == GameObject.TYPE.Player)
+      and (o.universe > 1)then
+        o.purge = true
+      end
+    end)
+  end
+end
 
 function drawDisappear(self)
   
@@ -174,7 +203,7 @@ function Player:update(dt, level, view)
                        fy(self.y, grid.tileh) + grid.tileh*dy
   
   -- check for collision induced by pushing a box into a wall
-  if not collision then -- if not already colliding
+  --[[if not collision then -- if not already colliding
     GameObject.mapToType("Box", function(box)
       if (not collision) -- break on first collision
       and ((box.universe == ALL_UNIVERSES) 
@@ -187,7 +216,7 @@ function Player:update(dt, level, view)
                                 y + 2*dy*self.h)
       end
     end)
-  end
+  end--]]
   
   if (self.universe > 1) and collision then
     purge = true
@@ -231,26 +260,7 @@ function Player:update(dt, level, view)
         spawnPlayer(-dy, dx)
         
       else -- collision == true
-      
-        -- collision with a wall
-        if self.universe > 1 then
-          -- destroy
-          self.purge = true
-          -- spawn clones
-          spawnPlayer(-dx, -dy)
-          spawnPlayer(dy, -dx)
-          spawnPlayer(-dy, dx)
-          
-        else
-          -- game over!
-          level.gameOver = true
-          GameObject.mapToAll(function(o) 
-            if (o.type == GameObject.TYPE.Player)
-            and (o.universe > 1)then
-              o.purge = true
-            end
-          end)
-        end
+        self:collisionDeath(level, dx, dy)
       end
     end
   end
@@ -263,12 +273,11 @@ function Player:update(dt, level, view)
 end
 
 function Player:draw()
-  if DEBUG then
-   --GameObject.draw(self)
-  end
   love.graphics.setColor(255, 255, 255, 200)
     love.graphics.draw(IMG_MAN, self.x, self.y)
   love.graphics.setColor(255, 255, 255, 255)
+  
+  GameObject.draw(self)
 end
 
 

@@ -45,7 +45,7 @@ game = require("gamestates/game")
 GLOBAL SETTINGS
 --]]------------------------------------------------------------
 
-DEBUG = true
+DEBUG = false
 audio.mute = DEBUG
 
 -- constants
