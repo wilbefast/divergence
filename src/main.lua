@@ -28,6 +28,8 @@ GameObject = require("unrequited/GameObject")
 Tile = require("unrequited/Tile")
 CollisionGrid = require("unrequited/CollisionGrid")
 
+PressurePlate = require("gameobjects/PressurePlate")
+Door = require("gameobjects/Door")
 Box = require("gameobjects/Box")
 Exit = require("gameobjects/Exit")
 SpecialEffect = require("gameobjects/SpecialEffect")

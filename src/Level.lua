@@ -53,6 +53,10 @@ local Level = Class
           parse_objects(layer.objects, Exit)
         elseif layer.name == "boxes" then
           parse_objects(layer.objects, Box)
+        elseif layer.name == "plates" then
+          parse_objects(layer.objects, PressurePlate)
+        elseif layer.name == "doors" then
+          parse_objects(layer.objects, Door)
         end
       end
     end

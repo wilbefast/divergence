@@ -129,9 +129,10 @@ function Player:eventCollision(other, level)
         
         -- if there already a box at (bx, by) ? 
         local box_stack = false
-        GameObject.mapToType("Box",
-            function(b) if box_stack then return 
-            else
+        GameObject.mapToType("Box", function(b)
+            if (not box_stack) and (b ~= other) 
+            and (self.boxes[b.box_id] == b) 
+            then
               if b:isCollidingPoint(bx + 12, by + 12) then
                 box_stack = true
               end

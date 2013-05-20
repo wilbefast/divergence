@@ -260,6 +260,17 @@ return {
           height = 32,
           visible = true,
           properties = {}
+        },
+        {
+          name = "",
+          type = "",
+          shape = "rectangle",
+          x = 128,
+          y = 384,
+          width = 32,
+          height = 32,
+          visible = true,
+          properties = {}
         }
       }
     },
@@ -287,6 +298,17 @@ return {
           shape = "rectangle",
           x = 352,
           y = 192,
+          width = 32,
+          height = 32,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "",
+          type = "",
+          shape = "rectangle",
+          x = 384,
+          y = 288,
           width = 32,
           height = 32,
           visible = true,
