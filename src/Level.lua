@@ -95,17 +95,6 @@ function Level:update(dt)
       
       -- end of current turn
       self.turnProgress = 0
-       
-      -- victory if now Exit objects remain
-      if GameObject.count("Exit") == 0 then
-        self.victory = true
-        GameObject.mapToAll(function(o) 
-            if (o.type == GameObject.TYPE.Player)
-            and (o.universe > 1)then
-              o.purge = true
-            end
-          end)
-      end
         
       GameObject.mapToType("Player", function(o) 
         o.turnQueued = false 

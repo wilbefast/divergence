@@ -93,8 +93,12 @@ function Player:eventCollision(other, level)
     
   -- Collision with exit
   elseif other.type == GameObject.TYPE.Exit then
-    if self.universe == 1 then
-      other.purge = true
+    if self.universe > 1 then
+      self.purge = true
+    elseif (self.x == self.targetX)
+    and (self.y == self.targetY) then
+      level.victory = true
+      self:destroyClones()
     end
   
   -- Collision with box
@@ -166,6 +170,17 @@ end
 Destroy
 --]]--
 
+function Player:destroyClones()
+  -- destroy all others
+  GameObject.mapToAll(function(o) 
+    if o:isType("Player") then
+      o.purge = (o.universe > 1)
+    elseif o:isType("Box") then
+      o.purge = (self.boxes[o.box_id] ~= o)
+    end
+  end)
+end
+
 function Player:collisionDeath(level, dx, dy)
   -- collision with a wall
   if self.universe > 1 then
@@ -185,14 +200,7 @@ function Player:collisionDeath(level, dx, dy)
     level.gameOver = true
     -- jump back to start
     self.targetX, self.targetY = self.x, self.y
-    -- destroy all others
-    GameObject.mapToAll(function(o) 
-      if o:isType("Player") then
-        o.purge = (o.universe > 1)
-      elseif o:isType("Box") then
-        o.purge = (self.boxes[o.box_id] ~= o)
-      end
-    end)
+    self:destroyClones()
   end
 end
 

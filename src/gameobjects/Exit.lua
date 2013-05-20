@@ -21,7 +21,7 @@ Initialisation
 --]]--
 
 local IMG_EXIT
-  = love.graphics.newImage("assets/images/key.png")
+  = love.graphics.newImage("assets/images/door.png")
 
 local Exit = Class
 {

@@ -108,32 +108,10 @@ return {
           name = "",
           type = "",
           shape = "rectangle",
-          x = 288,
-          y = 160,
-          width = 96,
-          height = 32,
-          visible = true,
-          properties = {}
-        },
-        {
-          name = "",
-          type = "",
-          shape = "rectangle",
           x = 320,
           y = 96,
-          width = 32,
-          height = 32,
-          visible = true,
-          properties = {}
-        },
-        {
-          name = "",
-          type = "",
-          shape = "rectangle",
-          x = 384,
-          y = 96,
-          width = 32,
-          height = 32,
+          width = 96,
+          height = 96,
           visible = true,
           properties = {}
         },
@@ -203,63 +181,8 @@ return {
           name = "",
           type = "",
           shape = "rectangle",
-          x = 352,
-          y = 96,
-          width = 32,
-          height = 32,
-          visible = true,
-          properties = {}
-        },
-        {
-          name = "",
-          type = "",
-          shape = "rectangle",
           x = 384,
-          y = 352,
-          width = 32,
-          height = 32,
-          visible = true,
-          properties = {}
-        },
-        {
-          name = "",
-          type = "",
-          shape = "rectangle",
-          x = 224,
-          y = 160,
-          width = 32,
-          height = 32,
-          visible = true,
-          properties = {}
-        },
-        {
-          name = "",
-          type = "",
-          shape = "rectangle",
-          x = 96,
-          y = 384,
-          width = 32,
-          height = 32,
-          visible = true,
-          properties = {}
-        },
-        {
-          name = "",
-          type = "",
-          shape = "rectangle",
-          x = 192,
-          y = 352,
-          width = 32,
-          height = 32,
-          visible = true,
-          properties = {}
-        },
-        {
-          name = "",
-          type = "",
-          shape = "rectangle",
-          x = 96,
-          y = 96,
+          y = 192,
           width = 32,
           height = 32,
           visible = true,
@@ -291,6 +214,79 @@ return {
           shape = "rectangle",
           x = 128,
           y = 160,
+          width = 32,
+          height = 32,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "",
+          type = "",
+          shape = "rectangle",
+          x = 192,
+          y = 256,
+          width = 32,
+          height = 32,
+          visible = true,
+          properties = {}
+        }
+      }
+    },
+    {
+      type = "objectgroup",
+      name = "plates",
+      visible = true,
+      opacity = 1,
+      properties = {},
+      objects = {
+        {
+          name = "",
+          type = "",
+          shape = "rectangle",
+          x = 96,
+          y = 384,
+          width = 32,
+          height = 32,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "",
+          type = "",
+          shape = "rectangle",
+          x = 96,
+          y = 352,
+          width = 32,
+          height = 32,
+          visible = true,
+          properties = {}
+        }
+      }
+    },
+    {
+      type = "objectgroup",
+      name = "doors",
+      visible = true,
+      opacity = 1,
+      properties = {},
+      objects = {
+        {
+          name = "",
+          type = "",
+          shape = "rectangle",
+          x = 320,
+          y = 192,
+          width = 32,
+          height = 32,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "",
+          type = "",
+          shape = "rectangle",
+          x = 352,
+          y = 192,
           width = 32,
           height = 32,
           visible = true,
