@@ -73,7 +73,8 @@ Collision
 function Player:collidesType(type)
   return ((type == GameObject.TYPE.Player)
       or (type == GameObject.TYPE.Exit)
-      or (type == GameObject.TYPE.Box))
+      or (type == GameObject.TYPE.Box)
+      or (type == GameObject.TYPE.Door))
 end
 
 function Player:eventCollision(other, level)
@@ -81,6 +82,10 @@ function Player:eventCollision(other, level)
   if level.gameOver then
     return
   end
+  
+  -- deduce direction
+  local dx, dy = other:centreX() - self:centreX(), 
+                other:centreY() - self:centreY()
   
   -- Collision with player
   if other.type == GameObject.TYPE.Player then
@@ -90,6 +95,9 @@ function Player:eventCollision(other, level)
     and (not level.turnQueued) then
       self.purge = true
     end
+    
+  elseif other.type == GameObject.TYPE.Door then
+    self:collisionDeath(level, dx, dy)
     
   -- Collision with exit
   elseif other.type == GameObject.TYPE.Exit then
@@ -108,8 +116,6 @@ function Player:eventCollision(other, level)
     if self.boxes[other.box_id] == other then
       
       -- push the box
-      local dx, dy = other:centreX() - self:centreX(), 
-                      other:centreY() - self:centreY()
       if math.abs(dx) < self.w/2 then
         dx = 0
       end
@@ -128,18 +134,17 @@ function Player:eventCollision(other, level)
           self.targetY + 8 + useful.sign(dy)*self.h
         
         -- if there already a box at (bx, by) ? 
-        local box_stack = false
-        GameObject.mapToType("Box", function(b)
-            if (not box_stack) and (b ~= other) 
-            and (self.boxes[b.box_id] == b) 
-            then
-              if b:isCollidingPoint(bx + 12, by + 12) then
-                box_stack = true
-              end
-            end
-        end)
+        local box_collision =
+          (GameObject.trueForAny("Box", 
+                function(b) 
+                  return b:isCollidingPoint(bx + 12, by + 12) 
+                end)
+            or GameObject.trueForAny("Door", 
+                function(d) 
+                  return d:isCollidingPoint(bx + 12, by + 12) 
+                end))
             
-        if box_stack
+        if box_collision
         or GameObject.COLLISIONGRID:collision(other, bx, by) 
         then
           -- pushing a box into a wall results in DEATH :D
@@ -191,6 +196,9 @@ function Player:destroyClones()
     elseif o:isType("Box") then
       o.purge = (self.boxes[o.box_id] ~= o)
     end
+    
+    if not o.purge then o.new = true end
+      
   end)
 end
 
@@ -281,6 +289,8 @@ function Player:update(dt, level, view)
     -- attempt to start moving
     if (dx ~= 0) or (dy ~= 0) then
       
+      self.new = false
+      
       if not collision then
         -- move out!
         self.targetX, self.targetY = desiredX, desiredY
@@ -306,7 +316,8 @@ function Player:update(dt, level, view)
 end
 
 function Player:draw()
-  love.graphics.setColor(255, 255, 255, 200)
+  love.graphics.setColor(255, 255, 255, 
+      useful.tri(self.new, 255, 200))
     love.graphics.draw(IMG_MAN, self.x, self.y)
   love.graphics.setColor(255, 255, 255, 255)
   

@@ -52,7 +52,7 @@ audio.mute = DEBUG
 
 -- constants
 ALL_UNIVERSES = 0
-CREATE_CLONES = true
+CREATE_CLONES = false
 
 --[[------------------------------------------------------------
 LOVE CALLBACKS

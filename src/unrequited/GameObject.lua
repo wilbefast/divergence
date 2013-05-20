@@ -187,6 +187,28 @@ function GameObject.mapToType(typename, f)
   useful.map(type_instances, f)
 end
 
+function GameObject.trueForAny(typename, f)
+  local type_instances = 
+    GameObject.INSTANCES[GameObject.TYPE[typename]]
+  for id, obj in pairs(type_instances) do
+    if f(obj) then
+      return true
+    end
+  end
+  return false
+end
+
+function GameObject.trueForAll(typename, f)
+  local type_instances = 
+    GameObject.INSTANCES[GameObject.TYPE[typename]]
+  local result = false
+  for id, obj in pairs(type_instances) do
+    result = (result and f(obj))
+  end
+  return result
+end
+
+
 
 --[[------------------------------------------------------------
 METHODS
@@ -263,7 +285,6 @@ function GameObject:isCollidingPoint(x, y)
   return (x >= self.x and x <= self.x + self.w
         and y >= self.y and y <= self.y + self.h)
 end
-
 
 --[[------------------------------------------------------------
 Game loop

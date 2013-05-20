@@ -93,7 +93,8 @@ end
 
 function Box:draw()
   
-  love.graphics.setColor(255, 255, 0, 200)
+  love.graphics.setColor(255, 255, 0, 
+      useful.tri(self.new, 255, 200))
   love.graphics.draw(IMG_BOX, self.x - 8, self.y - 8)
   
   -- default

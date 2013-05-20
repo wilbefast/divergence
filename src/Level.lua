@@ -63,11 +63,13 @@ local Level = Class
     
     -- save the player object
     self.player = GameObject.get("Player")
+    self.player.new = true
     
     -- all boxes are in the player's universe
     GameObject.mapToType("Box", function(box)
       self.player.boxes[box.box_id] = box
       box.reference_count = 1
+      box.new = true
     end)
     
     -- don't immediately accept input
