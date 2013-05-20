@@ -127,8 +127,20 @@ function Player:eventCollision(other, level)
         local by = 
           self.targetY + 8 + useful.sign(dy)*self.h
         
-        
-        if GameObject.COLLISIONGRID:collision(other, bx, by) then
+        -- if there already a box at (bx, by) ? 
+        local box_stack = false
+        GameObject.mapToType("Box",
+            function(b) if box_stack then return 
+            else
+              if b:isCollidingPoint(bx + 12, by + 12) then
+                box_stack = true
+              end
+            end
+        end)
+            
+        if box_stack
+        or GameObject.COLLISIONGRID:collision(other, bx, by) 
+        then
           -- pushing a box into a wall results in DEATH :D
           self:collisionDeath(level, dx, dy)
         else
