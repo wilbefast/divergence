@@ -60,6 +60,12 @@ local Level = Class
     -- save the player object
     self.player = GameObject.get("Player")
     
+    -- all boxes are in the player's universe
+    GameObject.mapToType("Box", function(box)
+      self.player.boxes[box.box_id] = box
+      box.reference_count = 1
+    end)
+    
     -- don't immediately accept input
     self.start = true
     
@@ -91,7 +97,7 @@ function Level:update(dt)
       self.turnProgress = 0
        
       -- victory if now Exit objects remain
-      if GameObject.count(GameObject.TYPE.Exit) == 0 then
+      if GameObject.count("Exit") == 0 then
         self.victory = true
         GameObject.mapToAll(function(o) 
             if (o.type == GameObject.TYPE.Player)

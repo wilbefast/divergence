@@ -78,6 +78,10 @@ end
 
 function Player:eventCollision(other, level)
   
+  if level.gameOver then
+    return
+  end
+  
   -- Collision with player
   if other.type == GameObject.TYPE.Player then
     if (self.x == other.x)
@@ -96,14 +100,10 @@ function Player:eventCollision(other, level)
   -- Collision with box
   elseif other.type == GameObject.TYPE.Box then
     
-    -- create a clone in MY universe
-    if (other.universe == ALL_UNIVERSES) 
-    and (not self.boxes[other]) then
-      self.boxes[other] = 
-        other:cloneToUniverse(self.universe)
-        
-    -- ONLY push boxes in MY universe
-    elseif other.universe == self.universe then
+    -- is this my universe's version of the box?
+    if self.boxes[other.box_id] == other then
+      
+      -- push the box
       local dx, dy = other:centreX() - self:centreX(), 
                       other:centreY() - self:centreY()
       if math.abs(dx) < self.w/2 then
@@ -112,26 +112,38 @@ function Player:eventCollision(other, level)
       if math.abs(dy) < self.h/2 then
         dy = 0
       end
-      other.targetX = 
-        self.targetX + 8 + useful.sign(dx)*self.w
-      other.targetY = 
-        self.targetY + 8 + useful.sign(dy)*self.h
+
+      -- 'clone' boxes present in other universes
+      if (other.targetX == other.x)
+      and (other.targetY == other.y) then
         
-      -- pushing a box into a wall results in DEATH :D
-      if GameObject.COLLISIONGRID:collision(other,
-        other.targetX, other.targetY) then
-          other.targetX, other.targetY = other.x, other.y
+        -- calculate new box position
+        local bx = 
+          self.targetX + 8 + useful.sign(dx)*self.w
+        local by = 
+          self.targetY + 8 + useful.sign(dy)*self.h
+        
+        
+        if GameObject.COLLISIONGRID:collision(other, bx, by) then
+          -- pushing a box into a wall results in DEATH :D
           self:collisionDeath(level, dx, dy)
+        else
+          other.reference_count = other.reference_count - 1
+          
+          local new_box = other:clone()
+          self.boxes[new_box.box_id] = new_box
+          new_box.reference_count = 1
+          
+          -- push the new box
+          new_box.targetX, new_box.targetY = bx, by
+        end
       end
-      
-        
     end
-    
   end
 end
 
 --[[------------------------------------------------------------
-CREATE
+Create
 --]]--
 
 function Player:cloneWithDirection(dx, dy)
@@ -140,8 +152,12 @@ function Player:cloneWithDirection(dx, dy)
     self.x + dx*self.w, self.y + dy*self.h)) 
   then
       local clone = Player(self.x, self.y, dx, dy)
-      useful.copyContents(self.boxes, clone.boxes)
       
+      -- copy across boxes, updating reference counts
+      for box_id, box in ipairs(self.boxes) do
+        clone.boxes[box_id] = box
+        box.reference_count = box.reference_count + 1
+      end
       return clone
   end
 end
@@ -160,16 +176,17 @@ function Player:collisionDeath(level, dx, dy)
     self:cloneWithDirection(dy, -dx)
     self:cloneWithDirection(-dy, dx)
 
-    else
+  else
     -- game over!
     level.gameOver = true
     -- jump back to start
     self.targetX, self.targetY = self.x, self.y
     -- destroy all others
     GameObject.mapToAll(function(o) 
-      if (o.type == GameObject.TYPE.Player)
-      and (o.universe > 1)then
-        o.purge = true
+      if o:isType("Player") then
+        o.purge = (o.universe > 1)
+      elseif o:isType("Box") then
+        o.purge = (self.boxes[o.box_id] ~= o)
       end
     end)
   end

@@ -115,9 +115,9 @@ function GameObject.getAll(typename)
   end
 end
 
-function GameObject.count(type)
-  if type then
-    return #(GameObject.INSTANCES[type])
+function GameObject.count(typename)
+  if typename then
+    return #(GameObject.INSTANCES[GameObject.TYPE[typename]])
   else
     local count = 0
     for _, objects_of_type 
