@@ -20,6 +20,9 @@ EXIT GAMEOBJECT
 Initialisation
 --]]--
 
+local IMG_EXIT
+  = love.graphics.newImage("assets/images/key.png")
+
 local Exit = Class
 {
   type = GameObject.TYPE.new("Exit"),
@@ -36,8 +39,7 @@ Game loop
 
 function Exit:draw()
   love.graphics.setColor(0, 255, 0)
-  love.graphics.rectangle(
-    "fill", self.x - 4, self.y - 4, 24, 24)
+  love.graphics.draw(IMG_EXIT, self.x - 8, self.y - 8)
   love.graphics.setColor(255, 255, 255)
   
   -- default

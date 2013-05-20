@@ -171,6 +171,10 @@ function Player:collisionDeath(level, dx, dy)
   if self.universe > 1 then
     -- destroy
     self.purge = true
+    -- decrement box reference counters
+    for box_id, box in ipairs(self.boxes) do
+      box.reference_count = box.reference_count - 1
+    end
     -- spawn clones
     self:cloneWithDirection(-dx, -dy)
     self:cloneWithDirection(dy, -dx)

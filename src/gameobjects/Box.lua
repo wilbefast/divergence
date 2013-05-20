@@ -20,6 +20,10 @@ BOX GAMEOBJECT
 Initialisation
 --]]--
 
+
+local IMG_BOX 
+  = love.graphics.newImage("assets/images/crate.png")
+
 local Box = Class
 {
   type = GameObject.TYPE.new("Box"),
@@ -54,11 +58,8 @@ end
 
 function Box:onPurge()
   SpecialEffect(self.x, self.y, function(sfx)
-    love.graphics.setColor(255, 255, 0, sfx.life*128)
-    love.graphics.rectangle("fill", 
-        sfx.x - 4 + (1 - sfx.life)*12, 
-        sfx.y - 4 + (1 - sfx.life)*12, 
-        sfx.life*24, sfx.life*24)
+    love.graphics.setColor(255, 128, 0, sfx.life*128)
+    love.graphics.draw(IMG_BOX, sfx.x -8, sfx.y -8)
     love.graphics.setColor(255, 255, 255, 255)
   end)
 end
@@ -92,9 +93,8 @@ end
 
 function Box:draw()
   
-  love.graphics.setColor(255, 255, 0, 150)
-  love.graphics.rectangle(
-    "fill", self.x - 4, self.y - 4, 24, 24)
+  love.graphics.setColor(255, 255, 0, 200)
+  love.graphics.draw(IMG_BOX, self.x - 8, self.y - 8)
   
   -- default
   GameObject.draw(self)
