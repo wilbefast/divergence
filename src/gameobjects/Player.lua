@@ -77,6 +77,39 @@ function Player:collidesType(type)
       or (type == GameObject.TYPE.Door))
 end
 
+function Player:isSameUniverse(other)
+  if other.type == GameObject.TYPE.Door then
+    return true --FIXME
+  elseif other.type == GameObject.TYPE.Box then
+    return (self.boxes[other.box_id] == other)
+  else
+    return false
+  end
+end
+
+function Player:isUniverseCollision(x, y)
+  return 
+  (
+    GameObject.COLLISIONGRID:pixelCollision(x, y)
+    
+  or
+    
+    GameObject.trueForAny("Box", 
+      function(b) 
+        return (self:isSameUniverse(b) 
+          and b:isCollidingPoint(x, y)) 
+      end)
+      
+  or 
+      
+    GameObject.trueForAny("Door", 
+      function(d) 
+        return (self:isSameUniverse(d)
+        and d:isCollidingPoint(x, y))
+      end)
+  )
+end
+
 function Player:eventCollision(other, level)
   
   if level.gameOver then
@@ -113,7 +146,7 @@ function Player:eventCollision(other, level)
   elseif other.type == GameObject.TYPE.Box then
     
     -- is this my universe's version of the box?
-    if self.boxes[other.box_id] == other then
+    if self:isSameUniverse(other) then
       
       -- push the box
       if math.abs(dx) < self.w/2 then
@@ -134,19 +167,7 @@ function Player:eventCollision(other, level)
           self.targetY + 8 + useful.sign(dy)*self.h
         
         -- if there already a box at (bx, by) ? 
-        local box_collision =
-          (GameObject.trueForAny("Box", 
-                function(b) 
-                  return b:isCollidingPoint(bx + 12, by + 12) 
-                end)
-            or GameObject.trueForAny("Door", 
-                function(d) 
-                  return d:isCollidingPoint(bx + 12, by + 12) 
-                end))
-            
-        if box_collision
-        or GameObject.COLLISIONGRID:collision(other, bx, by) 
-        then
+        if self:isUniverseCollision(bx, by) then
           -- pushing a box into a wall results in DEATH :D
           self:collisionDeath(level, dx, dy)
         else

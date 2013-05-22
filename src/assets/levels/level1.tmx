@@ -33,7 +33,7 @@
   </object>
   <object x="96" y="352" width="32" height="32">
    <properties>
-    <property name="circuit" value="3"/>
+    <property name="circuit" value="2"/>
    </properties>
   </object>
   <object x="128" y="384" width="32" height="32">
@@ -44,11 +44,6 @@
  </objectgroup>
  <objectgroup color="#ff0000" name="doors" width="16" height="16">
   <object x="320" y="192" width="32" height="32">
-   <properties>
-    <property name="circuit" value="3"/>
-   </properties>
-  </object>
-  <object x="352" y="192" width="32" height="32">
    <properties>
     <property name="circuit" value="2"/>
    </properties>

@@ -38,7 +38,7 @@ Game loop
 --]]--
 
 function PressurePlate:draw()
-  love.graphics.setColor(255, 255, 0, 255)
+  CIRCUIT_COLOUR[self.circuit]()
   love.graphics.draw(IMG_PLATE, self.x - 8, self.y - 8)
   love.graphics.setColor(255, 255, 255)
   

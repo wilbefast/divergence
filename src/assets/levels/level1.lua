@@ -262,7 +262,7 @@ return {
           height = 32,
           visible = true,
           properties = {
-            ["circuit"] = "3"
+            ["circuit"] = "2"
           }
         },
         {
@@ -292,19 +292,6 @@ return {
           type = "",
           shape = "rectangle",
           x = 320,
-          y = 192,
-          width = 32,
-          height = 32,
-          visible = true,
-          properties = {
-            ["circuit"] = "3"
-          }
-        },
-        {
-          name = "",
-          type = "",
-          shape = "rectangle",
-          x = 352,
           y = 192,
           width = 32,
           height = 32,
