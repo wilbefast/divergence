@@ -146,13 +146,22 @@ function Player:eventCollision(other, level)
   if other.type == GameObject.TYPE.Player then
     if (self.x == other.x)
     and (self.y == other.y)
-    and (self.universe > other.universe) 
     and (not level.turnQueued) then
-      self.purge = true
+      -- never destroy the controlled player!
+      if self.universe == 1 then
+        other.purge = true
+      elseif other.universe == 1 then
+        self.purge = true
+      -- toss a coin to see who dies :D
+      elseif useful.randBool() then
+        other.purge = true
+      else
+        self.purge = true
+      end
     end
     
   elseif other.type == GameObject.TYPE.Door then
-    self:collisionDeath(level, dx, dy)
+    self:dieAndClone(level, dx, dy)
     
   -- Collision with exit
   elseif other.type == GameObject.TYPE.Exit then
@@ -191,7 +200,7 @@ function Player:eventCollision(other, level)
         -- if there already a box at (bx, by) ? 
         if self:isUniverseCollision(bx, by) then
           -- pushing a box into a wall results in DEATH :D
-          self:collisionDeath(level, dx, dy)
+          self:dieAndClone(level, dx, dy)
         else
           other.reference_count = other.reference_count - 1
           
@@ -201,6 +210,7 @@ function Player:eventCollision(other, level)
           
           -- push the new box
           new_box.targetX, new_box.targetY = bx, by
+          new_box.pusher = self
         end
       end
     end
@@ -245,22 +255,31 @@ function Player:destroyClones()
   end)
 end
 
-function Player:collisionDeath(level, dx, dy)
-  -- collision with a wall
+function Player:die(level)
   if self.universe > 1 then
     -- destroy
     self.purge = true
-    -- spawn clones
-    self:cloneWithDirection(-dx, -dy)
-    self:cloneWithDirection(dy, -dx)
-    self:cloneWithDirection(-dy, dx)
-
   else
     -- game over!
     level.gameOver = true
     -- jump back to start
     self.targetX, self.targetY = self.x, self.y
     self:destroyClones()
+  end
+end
+
+function Player:dieAndClone(level, dx, dy)
+  
+  self:die(level)
+
+  if self.universe > 1 then
+    
+    dx = (dx or useful.sign(self.targetX - self.startX))
+    dy = (dy or useful.sign(self.targetY - self.startY))
+    
+    self:cloneWithDirection(-dx, -dy)
+    self:cloneWithDirection(dy, -dx)
+    self:cloneWithDirection(-dy, dx)
   end
 end
 
@@ -347,7 +366,7 @@ function Player:update(dt, level, view)
         self:cloneWithDirection(-dy, dx)
         
       else -- collision == true
-        self:collisionDeath(level, dx, dy)
+        self:dieAndClone(level, dx, dy)
       end
     end
   end

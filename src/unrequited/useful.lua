@@ -145,6 +145,12 @@ function useful.iSignedRand(value)
   return math.floor(useful.tri(r < 0.5, value*2*r, value*2*(r-0.5)))
 end
 
+function useful.randBool(chance_of_truth)
+  chance_of_truth = 
+    useful.clamp((chance_of_truth or 0.5), 0, 1)
+  return (math.random() < chance_of_truth)
+end
+
 function useful.clamp(val, lower_bound, upper_bound)
   return math.max(lower_bound, math.min(upper_bound, val))
 end

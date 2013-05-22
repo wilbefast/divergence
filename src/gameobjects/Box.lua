@@ -76,11 +76,17 @@ function Box:update(dt, level, view)
     self.purge = true
   end
   
+  -- do nothing if it's game over
+  if level.gameOver or level.start or level.victory then
+    return
+  end
+  
   -- update position
   if level.turnProgress == 0 then
     -- snap to destination
     self.x, self.y = self.targetX, self.targetY
     self.startX, self.startY = self.x, self.y
+    self.pusher = nil
 
   else
     -- move the box

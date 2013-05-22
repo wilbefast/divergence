@@ -32,6 +32,19 @@ local Key = Class
 }
 Key:include(GameObject)
 
+--[[------------------------------------------------------------
+Collision
+--]]--
+
+function Key:collidesType(type)
+  return (type == GameObject.TYPE.Box)
+end
+
+function Key:eventCollision(other, level)
+  if (other.type == GameObject.TYPE.Box) and (other.pusher) then
+    other.pusher:die(level)
+  end
+end
 
 --[[------------------------------------------------------------
 Game loop
