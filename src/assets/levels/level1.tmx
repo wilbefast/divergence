@@ -54,4 +54,11 @@
    </properties>
   </object>
  </objectgroup>
+ <objectgroup color="#ffaa00" name="keys" width="16" height="16">
+  <object x="224" y="160" width="32" height="32">
+   <properties>
+    <property name="circuit" value="1"/>
+   </properties>
+  </object>
+ </objectgroup>
 </map>

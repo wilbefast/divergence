@@ -126,7 +126,54 @@ function GameObject.count(typename)
     end
     return count
   end
-  
+end
+
+function GameObject.getSuchThat(predicate, typename)
+  local set = {}
+  if typename then
+    local type = GameObject.TYPE[typename]
+    if GameObject.INSTANCES[type] then
+      for _, object in pairs(GameObject.INSTANCES[type]) do
+        if predicate(object) then
+          table.insert(set, object)
+        end
+      end
+    end
+  else
+    for _, objects_of_type 
+    in pairs(GameObject.INSTANCES) do
+      for _, object in pairs(objects_of_type) do
+        if predicate(object) then
+          table.insert(set, object)
+        end
+      end
+    end
+  end
+  return set
+end
+
+function GameObject.countSuchThat(predicate, typename)
+  local count = 0
+  if typename then
+    local type = GameObject.TYPE[typename]
+    if GameObject.INSTANCES[type] then
+      for _, object in pairs(GameObject.INSTANCES[type]) do
+        if predicate(object) then
+          count = count + 1
+        end
+      end
+    end
+  else
+    for _, objects_of_type 
+    in pairs(GameObject.INSTANCES) do
+      for _, object in pairs(objects_of_type) do
+        if predicate(object) then
+          count = count + 1
+        end
+      end
+    end
+  end
+  return count
 end
 
 function GameObject.updateAll(dt, level, view)

@@ -28,9 +28,10 @@ GameObject = require("unrequited/GameObject")
 Tile = require("unrequited/Tile")
 CollisionGrid = require("unrequited/CollisionGrid")
 
+Box = require("gameobjects/Box")
+Key = require("gameobjects/Key")
 PressurePlate = require("gameobjects/PressurePlate")
 Door = require("gameobjects/Door")
-Box = require("gameobjects/Box")
 Exit = require("gameobjects/Exit")
 SpecialEffect = require("gameobjects/SpecialEffect")
 Player = require("gameobjects/Player")
@@ -67,7 +68,7 @@ LOVE CALLBACKS
 function love.load(arg)
     
   -- set up the screen resolution
-  if (not scaling:setup(1280, 720, (not DEBUG))) then --FIXME
+  if (not scaling:setup(1280, 720, false --[[(not DEBUG)--]])) then --FIXME
     print("Failed to set mode")
     love.event.push("quit")
   end

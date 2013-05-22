@@ -64,20 +64,17 @@ local Level = Class
           parse_objects(layer.objects, PressurePlate)
         elseif layer.name == "doors" then
           parse_objects(layer.objects, Door)
+        elseif layer.name == "keys" then
+          parse_objects(layer.objects, Key)
         end
       end
     end
     
     -- save the player object
     self.player = GameObject.get("Player")
-    self.player.new = true
+    self.player:initInLevel(self)
     
-    -- all boxes are in the player's universe
-    GameObject.mapToType("Box", function(box)
-      self.player.boxes[box.box_id] = box
-      box.reference_count = 1
-      box.new = true
-    end)
+    -- how many 
     
     -- don't immediately accept input
     self.start = true

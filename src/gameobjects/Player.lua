@@ -66,6 +66,28 @@ local Player = Class
 }
 Player:include(GameObject)
 
+function Player:initInLevel(level)
+  
+  -- method should only be called for the "real" player
+  self.new = true
+  
+  -- all boxes are in the player's universe
+  GameObject.mapToType("Box", function(box)
+    self.boxes[box.box_id] = box
+    box.reference_count = 1
+    box.new = true
+  end)
+   
+  -- how many keys are there to collect?
+  self.required_keys = {}
+  for i = 1, 3 do 
+    self.required_keys[i] = GameObject.getSuchThat(
+      function(key) return (key.circuit == i) end, "Key")
+    
+  end
+   
+end
+
 --[[------------------------------------------------------------
 Collision
 --]]--
@@ -228,10 +250,6 @@ function Player:collisionDeath(level, dx, dy)
   if self.universe > 1 then
     -- destroy
     self.purge = true
-    -- decrement box reference counters
-    for box_id, box in ipairs(self.boxes) do
-      box.reference_count = box.reference_count - 1
-    end
     -- spawn clones
     self:cloneWithDirection(-dx, -dy)
     self:cloneWithDirection(dy, -dx)
@@ -255,6 +273,10 @@ end
 
 function Player:onPurge()
   SpecialEffect(self.x, self.y, drawDisappear)
+  -- decrement box reference counters
+  for box_id, box in ipairs(self.boxes) do
+    box.reference_count = box.reference_count - 1
+  end
 end
 
 --[[------------------------------------------------------------
@@ -306,6 +328,7 @@ function Player:update(dt, level, view)
     self.isMoving = false
     self.x, self.y = self.targetX, self.targetY
     self.startX, self.startY = self.x, self.y
+    
     
     -- attempt to start moving
     if (dx ~= 0) or (dy ~= 0) then

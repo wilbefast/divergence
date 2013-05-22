@@ -314,6 +314,28 @@ return {
           }
         }
       }
+    },
+    {
+      type = "objectgroup",
+      name = "keys",
+      visible = true,
+      opacity = 1,
+      properties = {},
+      objects = {
+        {
+          name = "",
+          type = "",
+          shape = "rectangle",
+          x = 224,
+          y = 160,
+          width = 32,
+          height = 32,
+          visible = true,
+          properties = {
+            ["circuit"] = "1"
+          }
+        }
+      }
     }
   }
 }
