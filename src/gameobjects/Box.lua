@@ -59,6 +59,15 @@ function Box:onPurge()
   end)
 end
 
+--[[------------------------------------------------------------
+Collisions
+--]]--
+
+function Box:existsForPlayer(player)
+  return (player.boxes[self.box_id] == self)
+end
+
+
 
 --[[------------------------------------------------------------
 Game loop

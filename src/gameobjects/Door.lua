@@ -32,6 +32,26 @@ local Door = Class
 }
 Door:include(GameObject)
 
+--[[------------------------------------------------------------
+Destroy
+--]]--
+
+function Key:onPurge()
+  SpecialEffect(self.x, self.y, function(sfx)
+    CIRCUIT_COLOUR[self.circuit](sfx.life*128)
+    love.graphics.draw(IMG_DOOR, sfx.x -8, sfx.y -8)
+    love.graphics.setColor(255, 255, 255, 255)
+  end)
+end
+
+--[[------------------------------------------------------------
+Collisions
+--]]--
+
+function Door:openForPlayer(player)
+  return (#player.required_keys[self.circuit] == 0)
+end
+
 
 --[[------------------------------------------------------------
 Game loop

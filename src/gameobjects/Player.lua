@@ -89,6 +89,14 @@ function Player:initInLevel(level)
 end
 
 --[[------------------------------------------------------------
+Boxes
+--]]--
+
+function Player:hasBoxInUniverse(box)
+  return (self.boxes[box.box_id] == box)
+end
+
+--[[------------------------------------------------------------
 Collision
 --]]--
 
@@ -96,24 +104,27 @@ function Player:collidesType(type)
   return ((type == GameObject.TYPE.Player)
       or (type == GameObject.TYPE.Exit)
       or (type == GameObject.TYPE.Box)
-      or (type == GameObject.TYPE.Door)
       or (type == GameObject.TYPE.Key))
 end
 
-function Player:hasBoxInUniverse(box)
-  return (self.boxes[box.box_id] == box)
-end
 
-function Player:keyIndexInUniverse(key)
-  for i, universe_key in 
-  pairs(self.required_keys[key.circuit]) do
-    if (key == universe_key) then
-      return i
-    end
-  end
-  return nil
+-- Collision with walls, locks AND boxes
+function Player:isUniverseSoftCollision(x, y)
+  return 
+  (
+    self:isUniverseCollision(x, y)
+    
+  or 
+      
+    GameObject.trueForAny("Box", 
+      function(b) 
+        return (self:hasBoxInUniverse(b) 
+          and b:isCollidingPoint(x, y)) 
+      end)
+  )
 end
-
+  
+-- Collision with walls and locks
 function Player:isUniverseCollision(x, y)
   return 
   (
@@ -121,17 +132,9 @@ function Player:isUniverseCollision(x, y)
     
   or
     
-    GameObject.trueForAny("Box", 
-      function(b) 
-        return (self:hasBoxInUniverse(b) 
-          and b:isCollidingPoint(x, y)) 
-      end)
-      
-  or 
-      
     GameObject.trueForAny("Door", 
       function(d) 
-        return ((#(self.required_keys[d.circuit]) > 0)
+        return ((not d:openForPlayer(self))
         and d:isCollidingPoint(x, y))
       end)
   )
@@ -165,9 +168,6 @@ function Player:eventCollision(other, level)
       end
     end
     
-  elseif other.type == GameObject.TYPE.Door then
-    self:dieAndClone(level, dx, dy)
-    
   -- Collision with exit
   elseif other.type == GameObject.TYPE.Exit then
     if self.universe > 1 then
@@ -181,7 +181,7 @@ function Player:eventCollision(other, level)
   -- Collision with key
   elseif other.type == GameObject.TYPE.Key then
     -- has the key already been picked up?
-    local key_i = self:keyIndexInUniverse(other)
+    local key_i = other:indexForPlayer(self)
     if key_i then
       -- pick it up, cross it off the checklist!
       self.required_keys[other.circuit][key_i] = nil
@@ -212,8 +212,8 @@ function Player:eventCollision(other, level)
         local by = 
           self.targetY + 8 + useful.sign(dy)*self.h
         
-        -- if there already a box at (bx, by) ? 
-        if self:isUniverseCollision(bx, by) then
+        -- if there already a box or other obstacle at (bx, by) ? 
+        if self:isUniverseSoftCollision(bx, by) then
           -- pushing a box into a wall results in DEATH :D
           self:dieAndClone(level, dx, dy)
         else
@@ -274,7 +274,11 @@ function Player:destroyClones()
         o.purge = true
       end
     elseif o:isType("Key") then
-      if (not self:keyIndexInUniverse(o)) then
+      if (not o:indexForPlayer(self)) then
+        o.purge = true
+      end
+    elseif o:isType("Door") then
+      if o:openForPlayer(self) then
         o.purge = true
       end
     end
@@ -354,7 +358,7 @@ function Player:update(dt, level, view)
   end
   
   local collision
-    = grid:pixelCollision(x + dx*self.w, y + dy*self.h)
+    = self:isUniverseCollision(x + dx*self.w, y + dy*self.h)
 
   local fx, fy = useful.tri(dx > 0, useful.floor, useful.ceil),
                   useful.tri(dy > 0, useful.floor, useful.ceil)
@@ -411,6 +415,7 @@ function Player:draw()
   love.graphics.setColor(255, 255, 255, 
       useful.tri(self.new, 255, 200))
     love.graphics.draw(IMG_MAN, self.x, self.y)
+
   love.graphics.setColor(255, 255, 255, 255)
   
   GameObject.draw(self)

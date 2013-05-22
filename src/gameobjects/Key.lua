@@ -48,6 +48,18 @@ end
 Collision
 --]]--
 
+function Key:indexForPlayer(player)
+  for i, required_key in 
+  pairs(player.required_keys[self.circuit]) do
+    if (required_key == self) then
+      -- player has not yet picked up this key
+      return i
+    end
+  end
+  -- player already owns this key
+  return nil
+end
+
 function Key:collidesType(type)
   return (type == GameObject.TYPE.Box)
 end
