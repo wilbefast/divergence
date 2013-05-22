@@ -58,6 +58,7 @@ local Player = Class
     end
     self.universe = Player.next_universe
     self.boxes = {} 
+    self.required_keys = {}
     Player.next_universe = Player.next_universe + 1
   end,
       
@@ -79,7 +80,6 @@ function Player:initInLevel(level)
   end)
    
   -- how many keys are there to collect?
-  self.required_keys = {}
   for i = 1, 3 do 
     self.required_keys[i] = GameObject.getSuchThat(
       function(key) return (key.circuit == i) end, "Key")
@@ -96,17 +96,22 @@ function Player:collidesType(type)
   return ((type == GameObject.TYPE.Player)
       or (type == GameObject.TYPE.Exit)
       or (type == GameObject.TYPE.Box)
-      or (type == GameObject.TYPE.Door))
+      or (type == GameObject.TYPE.Door)
+      or (type == GameObject.TYPE.Key))
 end
 
-function Player:isSameUniverse(other)
-  if other.type == GameObject.TYPE.Door then
-    return true --FIXME
-  elseif other.type == GameObject.TYPE.Box then
-    return (self.boxes[other.box_id] == other)
-  else
-    return false
+function Player:hasBoxInUniverse(box)
+  return (self.boxes[box.box_id] == box)
+end
+
+function Player:keyIndexInUniverse(key)
+  for i, universe_key in 
+  pairs(self.required_keys[key.circuit]) do
+    if (key == universe_key) then
+      return i
+    end
   end
+  return nil
 end
 
 function Player:isUniverseCollision(x, y)
@@ -118,7 +123,7 @@ function Player:isUniverseCollision(x, y)
     
     GameObject.trueForAny("Box", 
       function(b) 
-        return (self:isSameUniverse(b) 
+        return (self:hasBoxInUniverse(b) 
           and b:isCollidingPoint(x, y)) 
       end)
       
@@ -126,7 +131,7 @@ function Player:isUniverseCollision(x, y)
       
     GameObject.trueForAny("Door", 
       function(d) 
-        return (self:isSameUniverse(d)
+        return ((#(self.required_keys[d.circuit]) > 0)
         and d:isCollidingPoint(x, y))
       end)
   )
@@ -172,12 +177,22 @@ function Player:eventCollision(other, level)
       level.victory = true
       self:destroyClones()
     end
+    
+  -- Collision with key
+  elseif other.type == GameObject.TYPE.Key then
+    -- has the key already been picked up?
+    local key_i = self:keyIndexInUniverse(other)
+    if key_i then
+      -- pick it up, cross it off the checklist!
+      self.required_keys[other.circuit][key_i] = nil
+    end
+    
   
   -- Collision with box
   elseif other.type == GameObject.TYPE.Box then
     
     -- is this my universe's version of the box?
-    if self:isSameUniverse(other) then
+    if (self:hasBoxInUniverse(other)) then
       
       -- push the box
       if math.abs(dx) < self.w/2 then
@@ -233,7 +248,13 @@ function Player:cloneWithDirection(dx, dy)
         clone.boxes[box_id] = box
         box.reference_count = box.reference_count + 1
       end
+      
+      -- copy across required keys
+      useful.copyContents(self.required_keys, 
+          clone.required_keys)
+      
       return clone
+      
   end
 end
 
@@ -245,9 +266,17 @@ function Player:destroyClones()
   -- destroy all others
   GameObject.mapToAll(function(o) 
     if o:isType("Player") then
-      o.purge = (o.universe > 1)
+      if (o.universe > 1) then
+        o.purge = true
+      end
     elseif o:isType("Box") then
-      o.purge = (self.boxes[o.box_id] ~= o)
+      if (self.boxes[o.box_id] ~= o) then
+        o.purge = true
+      end
+    elseif o:isType("Key") then
+      if (not self:keyIndexInUniverse(o)) then
+        o.purge = true
+      end
     end
     
     if not o.purge then o.new = true end

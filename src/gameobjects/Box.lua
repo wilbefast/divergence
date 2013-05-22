@@ -51,11 +51,6 @@ end
 Destroy
 --]]--
 
-function drawDisappear(self)
-  
-
-end
-
 function Box:onPurge()
   SpecialEffect(self.x, self.y, function(sfx)
     love.graphics.setColor(255, 128, 0, sfx.life*128)

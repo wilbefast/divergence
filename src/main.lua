@@ -56,9 +56,9 @@ ALL_UNIVERSES = 0
 CREATE_CLONES = true
 CIRCUIT_COLOUR =
 {
-  function() love.graphics.setColor(0, 255, 255, 255) end,
-  function() love.graphics.setColor(255, 255, 0, 255) end,
-  function() love.graphics.setColor(255, 0, 255, 255) end
+  function(a) love.graphics.setColor(0, 255, 255, a or 255) end,
+  function(a) love.graphics.setColor(255, 255, 0, a or 255) end,
+  function(a) love.graphics.setColor(255, 0, 255, a or 255) end
 }
 
 --[[------------------------------------------------------------
