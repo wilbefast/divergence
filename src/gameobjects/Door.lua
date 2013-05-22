@@ -36,7 +36,7 @@ Door:include(GameObject)
 Destroy
 --]]--
 
-function Key:onPurge()
+function Door:onPurge()
   SpecialEffect(self.x, self.y, function(sfx)
     CIRCUIT_COLOUR[self.circuit](sfx.life*128)
     love.graphics.draw(IMG_DOOR, sfx.x -8, sfx.y -8)
@@ -49,7 +49,27 @@ Collisions
 --]]--
 
 function Door:openForPlayer(player)
-  return (#player.required_keys[self.circuit] == 0)
+  
+  -- require all keys
+  if #player.required_keys[self.circuit] > 0 then
+    return false
+  end
+    
+  -- ALSO require all pressure plates
+  local required_plates 
+    = player.required_plates[self.circuit]
+  for i, box in pairs(player.boxes) do
+    if box.circuit == self.circuit then
+      required_plates = required_plates - 1
+    end
+  end
+  if required_plates > 0 then
+    return false
+  end
+  
+  
+  return true
+  
 end
 
 

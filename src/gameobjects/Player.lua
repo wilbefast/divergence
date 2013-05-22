@@ -59,6 +59,7 @@ local Player = Class
     self.universe = Player.next_universe
     self.boxes = {} 
     self.required_keys = {}
+    self.required_plates = {}
     Player.next_universe = Player.next_universe + 1
   end,
       
@@ -84,6 +85,13 @@ function Player:initInLevel(level)
     self.required_keys[i] = GameObject.getSuchThat(
       function(key) return (key.circuit == i) end, "Key")
     
+  end
+  
+  -- how many pressure-plates are there to press?
+  for i = 1, 3 do
+    self.required_plates[i] = 
+      GameObject.countSuchThat(function(plate)
+          return (plate.circuit == i) end, "PressurePlate")
   end
    
 end
@@ -253,6 +261,10 @@ function Player:cloneWithDirection(dx, dy)
       useful.copyContents(self.required_keys, 
           clone.required_keys)
       
+      -- copy across required plates
+      useful.copyContents(self.required_plates, 
+          clone.required_plates)
+      
       return clone
       
   end
@@ -340,6 +352,11 @@ function Player:update(dt, level, view)
   -- do nothing if it's game over
   if level.gameOver or level.start or level.victory then
     return
+  end
+  
+  -- FIXME DEBUG
+  if not CREATE_CLONES then
+    self:destroyClones()
   end
   
   -- cache

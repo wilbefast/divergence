@@ -67,6 +67,15 @@ function Box:existsForPlayer(player)
   return (player.boxes[self.box_id] == self)
 end
 
+function Box:collidesType(type)
+  return (type == GameObject.TYPE.PressurePlate)
+end
+
+function Box:eventCollision(other, level)
+  if (other.type == GameObject.TYPE.PressurePlate) then
+    self.circuit = other.circuit
+  end
+end
 
 
 --[[------------------------------------------------------------
@@ -93,6 +102,9 @@ function Box:update(dt, level, view)
     self.pusher = nil
 
   else
+    -- reset circuit
+    self.circuit = nil
+    
     -- move the box
     self.x = useful.lerp(self.startX, self.targetX, 
                           level.turnProgress)
@@ -109,6 +121,11 @@ function Box:draw()
   
   -- default
   GameObject.draw(self)
+  
+  if self.circuit then
+    love.graphics.setColor(0, 0, 0, 255)
+    love.graphics.print(self.circuit, self.x-5, self.y)
+  end
   
 end
 
