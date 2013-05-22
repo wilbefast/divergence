@@ -40,11 +40,18 @@ local Level = Class
     -- parse objects from levelfile
     for _, layer in ipairs(levelfile.layers) do
       
+      -- local function
       function parse_objects(objects, constructor)
         for i, object in ipairs(objects) do
-          self.player = constructor(object.x, object.y)
+          local newbie = constructor(object.x, object.y)
+          if object.properties then
+            for property, value in pairs(object.properties) do
+              newbie[property] = tonumber(value)
+            end
+          end
         end
       end
+      -- switch based on type of layer
       if layer.type == "objectgroup" then
         parse_objects(Player)
         if layer.name == "player" then

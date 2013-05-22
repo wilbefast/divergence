@@ -52,7 +52,13 @@ audio.mute = DEBUG
 
 -- constants
 ALL_UNIVERSES = 0
-CREATE_CLONES = false
+CREATE_CLONES = true
+CIRCUIT_COLOUR =
+{
+  function() love.graphics.setColor(0, 255, 255, 255) end,
+  function() love.graphics.setColor(255, 255, 0, 255) end,
+  function() love.graphics.setColor(255, 0, 255, 255) end
+}
 
 --[[------------------------------------------------------------
 LOVE CALLBACKS

@@ -248,7 +248,9 @@ return {
           width = 32,
           height = 32,
           visible = true,
-          properties = {}
+          properties = {
+            ["circuit"] = "1"
+          }
         },
         {
           name = "",
@@ -259,7 +261,9 @@ return {
           width = 32,
           height = 32,
           visible = true,
-          properties = {}
+          properties = {
+            ["circuit"] = "3"
+          }
         },
         {
           name = "",
@@ -270,7 +274,9 @@ return {
           width = 32,
           height = 32,
           visible = true,
-          properties = {}
+          properties = {
+            ["circuit"] = "2"
+          }
         }
       }
     },
@@ -290,7 +296,9 @@ return {
           width = 32,
           height = 32,
           visible = true,
-          properties = {}
+          properties = {
+            ["circuit"] = "3"
+          }
         },
         {
           name = "",
@@ -301,7 +309,9 @@ return {
           width = 32,
           height = 32,
           visible = true,
-          properties = {}
+          properties = {
+            ["circuit"] = "2"
+          }
         },
         {
           name = "",
@@ -312,7 +322,9 @@ return {
           width = 32,
           height = 32,
           visible = true,
-          properties = {}
+          properties = {
+            ["circuit"] = "1"
+          }
         }
       }
     }
