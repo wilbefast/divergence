@@ -122,10 +122,10 @@ function Box:draw()
   -- default
   GameObject.draw(self)
   
-  if self.circuit then
+  --[[if self.circuit then
     love.graphics.setColor(0, 0, 0, 255)
     love.graphics.print(self.circuit, self.x-5, self.y)
-  end
+  end--]]
   
 end
 

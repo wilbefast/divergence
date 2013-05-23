@@ -59,10 +59,10 @@ local Player = Class
     self.universe = Player.next_universe
     self.boxes = {} 
     self.required_keys = {}
-    self.required_plates = {}
     Player.next_universe = Player.next_universe + 1
   end,
       
+  required_plates = {},
   ghostDisappearTimer = 1,
   progress = 0
 }
@@ -89,7 +89,7 @@ function Player:initInLevel(level)
   
   -- how many pressure-plates are there to press?
   for i = 1, 3 do
-    self.required_plates[i] = 
+    Player.required_plates[i] = 
       GameObject.countSuchThat(function(plate)
           return (plate.circuit == i) end, "PressurePlate")
   end
@@ -142,8 +142,8 @@ function Player:isUniverseCollision(x, y)
     
     GameObject.trueForAny("Door", 
       function(d) 
-        return ((not d:openForPlayer(self))
-        and d:isCollidingPoint(x, y))
+        return (not d:openForPlayer(self)
+        and d:isCollidingPoint(x + 8, y + 8))
       end)
   )
 end
@@ -246,7 +246,7 @@ Create
 
 function Player:cloneWithDirection(dx, dy)
   if CREATE_CLONES and 
-  (not GameObject.COLLISIONGRID:pixelCollision(
+  (not self:isUniverseCollision(
     self.x + dx*self.w, self.y + dy*self.h)) 
   then
       local clone = Player(self.x, self.y, dx, dy)
@@ -262,8 +262,8 @@ function Player:cloneWithDirection(dx, dy)
           clone.required_keys)
       
       -- copy across required plates
-      useful.copyContents(self.required_plates, 
-          clone.required_plates)
+      --useful.copyContents(self.required_plates, 
+      --    clone.required_plates)
       
       return clone
       
@@ -432,8 +432,22 @@ function Player:draw()
   love.graphics.setColor(255, 255, 255, 
       useful.tri(self.new, 255, 200))
     love.graphics.draw(IMG_MAN, self.x, self.y)
+	
+	if DEBUG and (self.universe == 1) then
+		for dx = -1, 1 do 
+		for dy = -1, 1 do
+		  if (dx ~= 0) or (dy ~= 0)  then
+			DEBUG_COLOUR(not self:isUniverseCollision(self.x + dx*self.w, self.y + dy*self.h), 100)
+			love.graphics.rectangle("fill", self.x + dx*self.w, self.y + dy*self.h, 32, 32) 
+		  end -- if (dx ~= 0) or (dy ~= 0)  then
+		end -- for dx = -1, 1 do 
+		end -- for dy = -1, 1 do
+	end	
+	
+	
 
   love.graphics.setColor(255, 255, 255, 255)
+ 
   
   GameObject.draw(self)
 end
