@@ -73,6 +73,8 @@ local Level = Class
           parse_objects(layer.objects, Door)
         elseif layer.name == "keys" then
           parse_objects(layer.objects, Key)
+        elseif layer.name == "minotaurs" then
+          parse_objects(layer.objects, Monster)
         end
       end
     end

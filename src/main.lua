@@ -34,6 +34,7 @@ PressurePlate = require("gameobjects/PressurePlate")
 Door = require("gameobjects/Door")
 Exit = require("gameobjects/Exit")
 SpecialEffect = require("gameobjects/SpecialEffect")
+Monster = require("gameobjects/Monster")
 Player = require("gameobjects/Player")
 
 Level = require("Level")

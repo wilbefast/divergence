@@ -163,6 +163,26 @@ return {
       opacity = 1,
       properties = {},
       objects = {}
+    },
+    {
+      type = "objectgroup",
+      name = "minotaurs",
+      visible = true,
+      opacity = 1,
+      properties = {},
+      objects = {
+        {
+          name = "",
+          type = "",
+          shape = "rectangle",
+          x = 192,
+          y = 192,
+          width = 32,
+          height = 32,
+          visible = true,
+          properties = {}
+        }
+      }
     }
   }
 }
