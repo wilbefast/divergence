@@ -66,32 +66,10 @@ return {
           name = "",
           type = "",
           shape = "rectangle",
-          x = 96,
-          y = 32,
-          width = 64,
-          height = 128,
-          visible = true,
-          properties = {}
-        },
-        {
-          name = "",
-          type = "",
-          shape = "rectangle",
-          x = 64,
-          y = 160,
-          width = 32,
-          height = 32,
-          visible = true,
-          properties = {}
-        },
-        {
-          name = "",
-          type = "",
-          shape = "rectangle",
-          x = 160,
-          y = 160,
-          width = 32,
-          height = 32,
+          x = 32,
+          y = 64,
+          width = 96,
+          height = 160,
           visible = true,
           properties = {}
         }
@@ -108,7 +86,7 @@ return {
           name = "",
           type = "",
           shape = "rectangle",
-          x = 64,
+          x = 160,
           y = 64,
           width = 32,
           height = 32,
@@ -128,8 +106,8 @@ return {
           name = "",
           type = "",
           shape = "rectangle",
-          x = 160,
-          y = 64,
+          x = 32,
+          y = 32,
           width = 32,
           height = 32,
           visible = true,
@@ -143,7 +121,19 @@ return {
       visible = true,
       opacity = 1,
       properties = {},
-      objects = {}
+      objects = {
+        {
+          name = "",
+          type = "",
+          shape = "rectangle",
+          x = 160,
+          y = 128,
+          width = 32,
+          height = 32,
+          visible = true,
+          properties = {}
+        }
+      }
     },
     {
       type = "objectgroup",
@@ -151,7 +141,21 @@ return {
       visible = true,
       opacity = 1,
       properties = {},
-      objects = {}
+      objects = {
+        {
+          name = "",
+          type = "",
+          shape = "rectangle",
+          x = 192,
+          y = 192,
+          width = 32,
+          height = 32,
+          visible = true,
+          properties = {
+            ["circuit"] = "1"
+          }
+        }
+      }
     },
     {
       type = "objectgroup",
@@ -159,7 +163,21 @@ return {
       visible = true,
       opacity = 1,
       properties = {},
-      objects = {}
+      objects = {
+        {
+          name = "",
+          type = "",
+          shape = "rectangle",
+          x = 96,
+          y = 32,
+          width = 32,
+          height = 32,
+          visible = true,
+          properties = {
+            ["circuit"] = "1"
+          }
+        }
+      }
     },
     {
       type = "objectgroup",

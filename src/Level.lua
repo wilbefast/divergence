@@ -37,6 +37,13 @@ local Level = Class
     self.camera:lookAt(self.collisiongrid:centrePixel())
     self.camera:zoom(scaling.SCALE_MAX)
     
+    -- level special properties
+    for property, v in pairs( levelfile.properties) do
+      if property == "clones" then
+        CREATE_CLONES = useful.tri(v=="true", true, false)
+      end
+    end
+    
     -- parse objects from levelfile
     for _, layer in ipairs(levelfile.layers) do
       

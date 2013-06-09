@@ -162,7 +162,9 @@ function Player:eventCollision(other, level)
   if other.type == GameObject.TYPE.Player then
     if (self.x == other.x)
     and (self.y == other.y)
-    and (not level.turnQueued) then
+    and (not level.turnQueued) 
+    --and (self:hasIdenticalUniverse(other)) 
+    then
       -- never destroy the controlled player!
       if self.universe == 1 then
         other.purge = true
@@ -279,6 +281,29 @@ end
 --[[------------------------------------------------------------
 Destroy
 --]]--
+
+function Player:hasIdenticalUniverse(other)
+  
+  -- boxes in same positions ?
+  for box_id, box in ipairs(self.boxes) do
+    local other_box = other.boxes[box_id]
+    if (other_box.x ~= box.x) or (other_box.y ~= box.y) then
+      return false
+    end
+  end
+  
+  -- sames keys collected ?
+  for circuit, keys in ipairs(self.required_keys) do
+    for key_i, key in ipairs(keys) do
+      if (other.required_keys[circuit][key_i] ~= key) then
+        return false
+      end
+    end
+  end
+  
+  -- all good
+  return true
+end
 
 function Player:destroyClones()
   -- destroy all others

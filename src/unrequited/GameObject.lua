@@ -231,12 +231,17 @@ end
 function GameObject.mapToType(typename, f)
   local type_instances = 
     GameObject.INSTANCES[GameObject.TYPE[typename]]
-  useful.map(type_instances, f)
+  if type_instances then
+    useful.map(type_instances, f)
+  end
 end
 
 function GameObject.trueForAny(typename, f)
   local type_instances = 
     GameObject.INSTANCES[GameObject.TYPE[typename]]
+  if not type_instances then
+    return false
+  end
   for id, obj in pairs(type_instances) do
     if f(obj) then
       return true
@@ -248,6 +253,9 @@ end
 function GameObject.trueForAll(typename, f)
   local type_instances = 
     GameObject.INSTANCES[GameObject.TYPE[typename]]
+  if not type_instances then
+    return false
+  end
   local result = false
   for id, obj in pairs(type_instances) do
     result = (result and f(obj))
