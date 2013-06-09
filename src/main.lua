@@ -53,13 +53,21 @@ audio.mute = DEBUG
 
 -- constants
 ALL_UNIVERSES = 0
-CREATE_CLONES = false
+CREATE_CLONES = true
 CIRCUIT_COLOUR =
 {
   function(a) love.graphics.setColor(0, 255, 255, a or 255) end,
   function(a) love.graphics.setColor(255, 255, 0, a or 255) end,
   function(a) love.graphics.setColor(255, 0, 255, a or 255) end
 }
+DEBUG_COLOUR = function(bool, a)
+	a = (a or 255)
+	if bool then
+		love.graphics.setColor(0, 0, 255, a)
+	else
+		love.graphics.setColor(255, 0, 0, a)
+	end
+end
 
 --[[------------------------------------------------------------
 LOVE CALLBACKS
@@ -68,7 +76,7 @@ LOVE CALLBACKS
 function love.load(arg)
     
   -- set up the screen resolution
-  if (not scaling:setup(1280, 720, false --[[(not DEBUG)--]])) then --FIXME
+  if (not scaling:setup(1280, 720, (not DEBUG))) then --FIXME
     print("Failed to set mode")
     love.event.push("quit")
   end
