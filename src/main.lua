@@ -73,10 +73,19 @@ end
 LOVE CALLBACKS
 --]]------------------------------------------------------------
 
+function love.conf(t)
+  t.title = "Divergence" 
+  t.author = "William J. Dyce"
+  t.url = "http://wilbefast.com" 
+end
+
+
+IMG_MAN = love.graphics.newImage("assets/images/man.png")
+
 function love.load(arg)
     
   -- set up the screen resolution
-  if (not scaling:setup(1280, 720, (not DEBUG))) then --FIXME
+  if (not scaling:setup(1280, 720, false--[[ (not DEBUG) --]])) then --FIXME
     print("Failed to set mode")
     love.event.push("quit")
   end
@@ -88,6 +97,15 @@ function love.load(arg)
   love.graphics.setDefaultImageFilter("nearest", "nearest")
   love.graphics.setLineStyle("rough", 1)
 
+  -- no mouse
+  love.mouse.setVisible(false)
+  
+  -- window title
+  love.graphics.setCaption("Divergence")
+  
+  -- window icon
+  love.graphics.setIcon(IMG_MAN)  
+  
   -- go to the initial gamestate
   GameState.switch(game)
 end

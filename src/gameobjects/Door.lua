@@ -29,6 +29,8 @@ local Door = Class
   init = function(self, x, y)
     GameObject.init(self, x + 8, y + 8, 16, 16)
   end,
+      
+  alpha = 1
 }
 Door:include(GameObject)
 
@@ -37,11 +39,13 @@ Destroy
 --]]--
 
 function Door:onPurge()
-  SpecialEffect(self.x, self.y, function(sfx)
-    CIRCUIT_COLOUR[self.circuit](sfx.life*128)
-    love.graphics.draw(IMG_DOOR, sfx.x -8, sfx.y -8)
-    love.graphics.setColor(255, 255, 255, 255)
-  end)
+  if self.alpha == 255 then
+    SpecialEffect(self.x, self.y, function(sfx)
+      CIRCUIT_COLOUR[self.circuit](sfx.life*128)
+      love.graphics.draw(IMG_DOOR, sfx.x -8, sfx.y -8)
+      love.graphics.setColor(255, 255, 255, 255)
+    end)
+  end
 end
 
 --[[------------------------------------------------------------
@@ -77,8 +81,18 @@ end
 Game loop
 --]]--
 
+function Door:update(dt)
+  if not CREATE_CLONES then
+    if self:openForPlayer(GameObject.get("Player")) then
+      self.alpha = math.max(0, self.alpha - dt)
+    else
+      self.alpha = math.min(1, self.alpha + dt)
+    end
+  end
+end
+
 function Door:draw()
-  CIRCUIT_COLOUR[self.circuit]()
+  CIRCUIT_COLOUR[self.circuit](self.alpha*255)
   love.graphics.draw(IMG_DOOR, self.x - 8, self.y - 8)
   love.graphics.setColor(255, 255, 255)
   

@@ -20,9 +20,6 @@ PLAYER GAMEOBJECT
 Initialisation
 --]]--
 
-local IMG_MAN 
-  = love.graphics.newImage("assets/images/man.png")
-
 function drawAppear(self)
   love.graphics.setColor(0, 255, 255, self.life*255)
   
@@ -195,6 +192,10 @@ function Player:eventCollision(other, level)
     if key_i then
       -- pick it up, cross it off the checklist!
       self.required_keys[other.circuit][key_i] = nil
+      -- destroy if there are no clones
+      if not CREATE_CLONES then
+        other.purge = true
+      end
     end
     
   
@@ -384,12 +385,7 @@ function Player:update(dt, level, view)
   if level.gameOver or level.start or level.victory then
     return
   end
-  
-  -- FIXME DEBUG
-  if not CREATE_CLONES then
-    self:destroyClones()
-  end
-  
+
   -- cache
   local grid = GameObject.COLLISIONGRID
   
@@ -461,7 +457,7 @@ end
 
 function Player:draw()
   love.graphics.setColor(255, 255, 255, 
-      useful.tri(self.new, 255, 200))
+      useful.tri(self.new or (not CREATE_CLONES), 255, 200))
     love.graphics.draw(IMG_MAN, self.x, self.y)
 	
 	if DEBUG and (self.universe == 1) then

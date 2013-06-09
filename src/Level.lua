@@ -107,7 +107,7 @@ function Level:update(dt)
   
   if (self.turnProgress > 0) or self.turnQueued then
     self.turnQueued = false
-    self.turnProgress = self.turnProgress + dt
+    self.turnProgress = self.turnProgress + dt*2
     if self.turnProgress > 1 then
       
       -- end of current turn

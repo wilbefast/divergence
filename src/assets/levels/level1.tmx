@@ -8,15 +8,14 @@
   <object x="224" y="0" width="32" height="256"/>
   <object x="32" y="0" width="192" height="32"/>
   <object x="32" y="224" width="192" height="32"/>
-  <object x="96" y="32" width="64" height="128"/>
-  <object x="64" y="160" width="32" height="32"/>
-  <object x="160" y="160" width="32" height="32"/>
+  <object x="128" y="32" width="96" height="128"/>
+  <object x="64" y="160" width="160" height="32"/>
  </objectgroup>
  <objectgroup color="#5500ff" name="player" width="8" height="8">
   <object x="64" y="64" width="32" height="32"/>
  </objectgroup>
  <objectgroup color="#80ff00" name="exit" width="8" height="8">
-  <object x="160" y="64" width="32" height="32"/>
+  <object x="192" y="192" width="32" height="32"/>
  </objectgroup>
  <objectgroup color="#ffff00" name="boxes" width="8" height="8"/>
  <objectgroup color="#ff55ff" name="plates" width="8" height="8"/>

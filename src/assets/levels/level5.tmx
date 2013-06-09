@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="9" height="9" tilewidth="32" tileheight="32">
+ <properties>
+  <property name="clones" value="false"/>
+ </properties>
+ <objectgroup color="#ffffff" name="walls" width="9" height="9">
+  <object x="256" y="32" width="32" height="256"/>
+  <object x="0" y="0" width="288" height="32"/>
+  <object x="0" y="256" width="256" height="32"/>
+  <object x="0" y="32" width="32" height="224"/>
+ </objectgroup>
+ <objectgroup color="#5500ff" name="player" width="9" height="9">
+  <object x="96" y="96" width="32" height="32"/>
+ </objectgroup>
+ <objectgroup color="#80ff00" name="exit" width="9" height="9"/>
+ <objectgroup color="#ffff00" name="boxes" width="9" height="9">
+  <object x="128" y="96" width="32" height="32"/>
+ </objectgroup>
+ <objectgroup color="#ff55ff" name="plates" width="9" height="9">
+  <object x="160" y="96" width="32" height="32">
+   <properties>
+    <property name="circuit" value="1"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup color="#ff0000" name="doors" width="9" height="9">
+  <object x="128" y="160" width="32" height="32">
+   <properties>
+    <property name="circuit" value="1"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup color="#ffaa00" name="keys" width="9" height="9"/>
+</map>
