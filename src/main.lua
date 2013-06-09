@@ -53,7 +53,7 @@ audio.mute = DEBUG
 
 -- constants
 ALL_UNIVERSES = 0
-CREATE_CLONES = true
+CREATE_CLONES = false
 CIRCUIT_COLOUR =
 {
   function(a) love.graphics.setColor(0, 255, 255, a or 255) end,

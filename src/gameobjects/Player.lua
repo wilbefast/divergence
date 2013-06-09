@@ -225,15 +225,21 @@ function Player:eventCollision(other, level)
           -- pushing a box into a wall results in DEATH :D
           self:dieAndClone(level, dx, dy)
         else
-          other.reference_count = other.reference_count - 1
           
-          local new_box = other:clone()
-          self.boxes[new_box.box_id] = new_box
-          new_box.reference_count = 1
+          local pushed_box = other
+          
+          -- clone box into my universe
+          if CREATE_CLONES then
+            other.reference_count = other.reference_count - 1
+            local new_box = other:clone()
+            self.boxes[new_box.box_id] = new_box
+            new_box.reference_count = 1
+            pushed_box = new_box
+          end
           
           -- push the new box
-          new_box.targetX, new_box.targetY = bx, by
-          new_box.pusher = self
+          pushed_box.targetX, pushed_box.targetY = bx, by
+          pushed_box.pusher = self
         end
       end
     end
