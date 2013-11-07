@@ -55,7 +55,7 @@ Collisions
 function Door:openForPlayer(player)
   
   -- require all keys
-  if #player.required_keys[self.circuit] > 0 then
+  if #(player.required_keys[self.circuit]) > 0 then
     return false
   end
     
@@ -95,7 +95,7 @@ function Door:draw()
   CIRCUIT_COLOUR[self.circuit](self.alpha*255)
   love.graphics.draw(IMG_DOOR, self.x - 8, self.y - 8)
   love.graphics.setColor(255, 255, 255)
-  
+
   -- default
   GameObject.draw(self)
 end

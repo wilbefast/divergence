@@ -17,6 +17,14 @@ PLAYER GAMEOBJECT
 --]]------------------------------------------------------------
 
 --[[------------------------------------------------------------
+Resources
+--]]--
+
+audio:load_sound("fail", 2)
+local sound_victory = love.audio.newSource("assets/audio/positive.wav", "static")
+audio:load_sound("button_rise", 1)
+
+--[[------------------------------------------------------------
 Initialisation
 --]]--
 
@@ -181,6 +189,9 @@ function Player:eventCollision(other, level)
       self.purge = true
     elseif (self.x == self.targetX)
     and (self.y == self.targetY) then
+      if not level.victory then
+        sound_victory:play()
+      end
       level.victory = true
       self:destroyClones()
     end
@@ -338,6 +349,7 @@ function Player:die(level)
     self.purge = true
   else
     -- game over!
+    audio:play_sound("fail")
     level.gameOver = true
     -- jump back to start
     self.targetX, self.targetY = self.x, self.y
@@ -428,7 +440,12 @@ function Player:update(dt, level, view)
     
     -- attempt to start moving
     if (dx ~= 0) or (dy ~= 0) then
-      
+
+      -- make a sound
+      if (self.universe == 1) then
+        audio:play_sound("button_rise", 0.1)
+      end
+
       self.new = false
       
       if not collision then

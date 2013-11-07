@@ -65,7 +65,7 @@ function Key:collidesType(type)
 end
 
 function Key:eventCollision(other, level)
-  if (other.type == GameObject.TYPE.Box) and (other.pusher) then
+  if (other.type == GameObject.TYPE.Box) and (other.pusher) and (self:indexForPlayer(other.pusher)) then
     other.pusher:die(level)
   end
 end

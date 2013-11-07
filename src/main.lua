@@ -43,8 +43,6 @@ title = require("gamestates/title")
 game = require("gamestates/game")
 
 
-
-
 --[[------------------------------------------------------------
 GLOBAL SETTINGS
 --]]------------------------------------------------------------
@@ -83,10 +81,14 @@ end
 
 IMG_MAN = love.graphics.newImage("assets/images/man.png")
 
+local MUSIC = love.audio.newSource("assets/audio/justbeyourself.ogg")
+  MUSIC:setLooping(true)
+  MUSIC:setVolume(0.8)
+
 function love.load(arg)
     
   -- set up the screen resolution
-  if (not scaling:setup(1280, 720, false--[[ (not DEBUG) --]])) then --FIXME
+  if (not scaling:setup(1280, 720, true--[[ (not DEBUG) --]])) then --FIXME
     print("Failed to set mode")
     love.event.push("quit")
   end
@@ -109,6 +111,9 @@ function love.load(arg)
   
   -- go to the initial gamestate
   GameState.switch(game)
+
+  -- start the music !
+  MUSIC:play()
 end
 
 function love.focus(f)

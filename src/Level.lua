@@ -40,7 +40,7 @@ local Level = Class
     -- level special properties
     for property, v in pairs( levelfile.properties) do
       if property == "clones" then
-        CREATE_CLONES = useful.tri(v=="true", true, false)
+        --CREATE_CLONES = useful.tri(v=="true", true, false)
       end
     end
     

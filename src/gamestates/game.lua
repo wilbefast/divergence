@@ -16,6 +16,8 @@ Lesser General Public License for more details.
 GAME GAMESTATE
 --]]------------------------------------------------------------
 
+local sound_change = love.audio.newSource("assets/audio/change_scene.wav", "static")
+
 local state = GameState.new()
 
 function state:reloadLevel()
@@ -27,7 +29,7 @@ function state:reloadLevel()
 end
 
 function state:init()
-  self.level_number = 5
+  self.level_number = 3
   self:reloadLevel()
 end
 
@@ -53,6 +55,10 @@ function state:keypressed(key, uni)
       
     elseif self.level.victory then
       self.level_number = self.level_number + 1
+      if self.level_number >= 5 then
+        self.level_number = 1
+      end
+      sound_change:play()
       self:reloadLevel()
     end
   end
