@@ -56,7 +56,7 @@ end
 function scaling:setup(desired_w, desired_h, fullscreen)
   self.DEFAULT_W, self.DEFAULT_H = desired_w, desired_h
   -- get and sort the available screen modes from best to worst
-  local modes = love.graphics.getModes()
+  local modes = love.window.getFullscreenModes()
   table.sort(modes, function(a, b) 
     return ((a.width*a.height > b.width*b.height) 
           and (a.width <= desired_w) and (a.height <= desired_h)) end)
@@ -69,7 +69,8 @@ function scaling:setup(desired_w, desired_h, fullscreen)
     end
     
     -- try to set the resolution
-    local success = love.graphics.setMode(m.width, m.height, fullscreen)
+    local success = love.window.setMode(m.width, m.height,
+    								{ fullscreen = true })
     if success then
       self.SCALE_X, self.SCALE_Y = m.width/desired_w, m.height/desired_h
       self.SCALE_MIN, self.SCALE_MAX = math.min(self.SCALE_X, self.SCALE_Y), 

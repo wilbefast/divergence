@@ -29,7 +29,7 @@ function state:reloadLevel()
 end
 
 function state:init()
-  self.level_number = 3
+  self.level_number = 1
   self:reloadLevel()
 end
 

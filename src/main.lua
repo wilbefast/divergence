@@ -97,17 +97,17 @@ function love.load(arg)
   math.randomseed(os.time())
   
   -- pixelated :D
-  love.graphics.setDefaultImageFilter("nearest", "nearest")
+  love.graphics.setDefaultFilter("nearest", "nearest")
   love.graphics.setLineStyle("rough", 1)
 
   -- no mouse
   love.mouse.setVisible(false)
   
   -- window title
-  love.graphics.setCaption("Divergence")
+  love.window.setTitle("Divergence")
   
   -- window icon
-  love.graphics.setIcon(IMG_MAN)  
+  love.window.setIcon(IMG_MAN:getData())  
   
   -- go to the initial gamestate
   GameState.switch(game)
@@ -133,7 +133,7 @@ function keyreleased(key, uni)
 end
 
 MIN_DT = 1/60
-MAX_DT = 1/10
+MAX_DT = 1/30
 function love.update(dt)
   dt = useful.clamp(dt, MIN_DT, MAX_DT)
   
