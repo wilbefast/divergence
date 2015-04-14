@@ -35,7 +35,6 @@ local Level = Class
     -- point camera at centre of collision-grid
     self.camera = Camera(0, 0)
     self.camera:lookAt(self.collisiongrid:centrePixel())
-    self.camera:zoom(scaling.SCALE_MAX)
     
     -- level special properties
     for property, v in pairs( levelfile.properties) do

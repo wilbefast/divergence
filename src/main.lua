@@ -9,7 +9,7 @@ http://www.gnu.org/licenses/lgpl-2.1.html
 This library is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-Lesser General Public License fDEFAULT_W, DEFAULT_H, zor more details.
+Lesser General Public License fzor more details.
 --]]
 
 --[[------------------------------------------------------------
@@ -22,7 +22,6 @@ Camera = require("hump/camera")
 
 useful = require("unrequited/useful")
 audio = require("unrequited/audio")
-scaling = require("unrequited/scaling")
 input = require("unrequited/input")
 GameObject = require("unrequited/GameObject")
 Tile = require("unrequited/Tile")
@@ -49,6 +48,9 @@ GLOBAL SETTINGS
 
 DEBUG = false
 audio.mute = DEBUG
+
+DEFAULT_W = 480
+DEFAULT_H = 480
 
 -- constants
 ALL_UNIVERSES = 0
@@ -81,24 +83,21 @@ end
 
 IMG_MAN = love.graphics.newImage("assets/images/man.png")
 
-local MUSIC = love.audio.newSource("assets/audio/justbeyourself.ogg")
+local MUSIC = love.audio.newSource("assets/audio/music.ogg")
   MUSIC:setLooping(true)
   MUSIC:setVolume(0.8)
 
 function love.load(arg)
-    
-  -- set up the screen resolution
-  if (not scaling:setup(1280, 720, true--[[ (not DEBUG) --]])) then --FIXME
-    print("Failed to set mode")
-    love.event.push("quit")
-  end
-
   -- initialise random
   math.randomseed(os.time())
   
   -- pixelated :D
   love.graphics.setDefaultFilter("nearest", "nearest")
   love.graphics.setLineStyle("rough", 1)
+
+  -- canvas
+  canvas = love.graphics.newCanvas(love.graphics.getWidth(),
+  	love.graphics.getHeight())
 
   -- no mouse
   love.mouse.setVisible(false)
@@ -134,7 +133,12 @@ end
 
 MIN_DT = 1/60
 MAX_DT = 1/30
+
+local _t = 0
+
 function love.update(dt)
+	_t = _t + dt
+
   dt = useful.clamp(dt, MIN_DT, MAX_DT)
   
   input:update(dt)
@@ -142,5 +146,10 @@ function love.update(dt)
 end
 
 function love.draw()
+	canvas:clear()
+	love.graphics.setCanvas(canvas)
   GameState.draw()
+  love.graphics.setCanvas(nil)
+  love.graphics.draw(canvas, 0, math.cos(_t * math.pi*2)*8,
+  	0, 1 + 0.1*math.sin(_t), 1 + 0.1*math.cos(_t))
 end
