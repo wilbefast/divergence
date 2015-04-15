@@ -32,10 +32,6 @@ local Level = Class
     GameObject.purgeAll()
     GameObject.COLLISIONGRID = self.collisiongrid
     
-    -- point camera at centre of collision-grid
-    self.camera = Camera(0, 0)
-    self.camera:lookAt(self.collisiongrid:centrePixel())
-    
     -- level special properties
     for property, v in pairs( levelfile.properties) do
       if property == "clones" then
@@ -89,6 +85,10 @@ local Level = Class
     
     -- pseudo-turn-based game
     self.turnProgress = 0
+
+    -- camera
+    local midx, midy = self.collisiongrid:centrePixel()
+    self.camx, self.camy = DEFAULT_W/2 - midx, DEFAULT_H/2 - midy
   end,
 }
   
@@ -126,18 +126,22 @@ function Level:update(dt)
 end
 
 function Level:draw()
-  self.camera:attach()
-    if self.gameOver then
-      love.graphics.setColor(255, 0, 0)
-    elseif self.victory then
-      love.graphics.setColor(0, 255, 0)
-    elseif self.start then
-      --love.graphics.setColor(128, 128, 255)
-    end
-    self.collisiongrid:draw()
-    love.graphics.setColor(255, 255, 255)
-    GameObject.drawAll()
-  self.camera:detach()
+
+	love.graphics.push()
+	love.graphics.translate(self.camx, self.camy)
+
+  if self.gameOver then
+    love.graphics.setColor(255, 0, 0)
+  elseif self.victory then
+    love.graphics.setColor(0, 255, 0)
+  elseif self.start then
+    --love.graphics.setColor(128, 128, 255)
+  end
+  self.collisiongrid:draw()
+  love.graphics.setColor(255, 255, 255)
+  GameObject.drawAll()
+
+  love.graphics.pop()
 end
 
 --[[------------------------------------------------------------

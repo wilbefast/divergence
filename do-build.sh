@@ -5,7 +5,14 @@ rm -rf build/0.9.1/
 cd ./src/
 
 #love-release -lmw --osx-icon ../presskit/mac_icon.iscns --win-icon ../presskit/SH_headIcon.ico --osx-maintainer-name wilbefast -n divergence -r ../build/ . 
-love-release -lmw --osx-maintainer-name wilbefast -n divergence -r ../build/ . 
+love-release -lmaw \
+	--osx-maintainer-name wilbefast \
+	--apk-maintainer-name wilbefast \
+	--apk-package-name divergence \
+	--apk-package-version 1.0 \
+	-n divergence \
+	--apk-icon ../icons/ \
+	-r ../build/ . 
 
 rm -f divergence-win32.zip
 rm -f divergence-win64.zip
@@ -24,6 +31,5 @@ zip -g divergence-win64.zip README.md
 mkdir divergence-love
 cp divergence.love divergence-love
 cp README.md divergence-love
-cp manual.pdf divergence-love
 zip -r divergence-love.zip divergence-love/
 rm -rf divergence-love

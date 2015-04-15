@@ -49,8 +49,13 @@ GLOBAL SETTINGS
 DEBUG = false
 audio.mute = DEBUG
 
-DEFAULT_W = 480
-DEFAULT_H = 480
+DEFAULT_W = 512
+DEFAULT_H = 512
+WINDOW_W = 0
+WINDOW_H = 0
+VIEW_SCALE = 0
+VIEW_W = 0
+VIEW_H = 0
 
 -- constants
 ALL_UNIVERSES = 0
@@ -86,8 +91,23 @@ IMG_MAN = love.graphics.newImage("assets/images/man.png")
 local MUSIC = love.audio.newSource("assets/audio/music.ogg")
   MUSIC:setLooping(true)
   MUSIC:setVolume(0.8)
+  MUSIC_LENGTH = love.sound.newSoundData(
+  	"assets/audio/music.ogg"):getDuration()
 
 function love.load(arg)
+	-- resolution
+	WINDOW_W, WINDOW_H = love.graphics.getWidth(), love.graphics.getHeight()
+  while (VIEW_W < WINDOW_W) and (VIEW_H < WINDOW_H) do
+    VIEW_SCALE = VIEW_SCALE + 0.00001
+    VIEW_W = DEFAULT_W
+    VIEW_H = DEFAULT_H*VIEW_SCALE
+  end
+  while (VIEW_W >= WINDOW_W) or (VIEW_H >= WINDOW_H) do
+	  VIEW_SCALE = VIEW_SCALE - 0.00001
+    VIEW_W = DEFAULT_W*VIEW_SCALE
+    VIEW_H = DEFAULT_H*VIEW_SCALE
+	end
+
   -- initialise random
   math.randomseed(os.time())
   
@@ -96,8 +116,7 @@ function love.load(arg)
   love.graphics.setLineStyle("rough", 1)
 
   -- canvas
-  canvas = love.graphics.newCanvas(love.graphics.getWidth(),
-  	love.graphics.getHeight())
+  canvas = love.graphics.newCanvas(DEFAULT_W, DEFAULT_H)
 
   -- no mouse
   love.mouse.setVisible(false)
@@ -134,10 +153,8 @@ end
 MIN_DT = 1/60
 MAX_DT = 1/30
 
-local _t = 0
 
 function love.update(dt)
-	_t = _t + dt
 
   dt = useful.clamp(dt, MIN_DT, MAX_DT)
   
@@ -145,11 +162,26 @@ function love.update(dt)
   GameState.update(dt)
 end
 
+local _t = 0
 function love.draw()
 	canvas:clear()
 	love.graphics.setCanvas(canvas)
-  GameState.draw()
+  	GameState.draw()
   love.graphics.setCanvas(nil)
-  love.graphics.draw(canvas, 0, math.cos(_t * math.pi*2)*8,
-  	0, 1 + 0.1*math.sin(_t), 1 + 0.1*math.cos(_t))
+
+  love.graphics.push()
+  love.graphics.translate(WINDOW_W/2, WINDOW_H/2)
+  love.graphics.scale(VIEW_SCALE, VIEW_SCALE)
+
+	  local _t = 200*MUSIC:tell()/MUSIC_LENGTH
+
+	  local x = math.cos(_t * math.pi*2)*8
+	  local y = math.sin(_t * math.pi*2)*8
+	  local w = 1 + 0.1*math.cos(_t)
+	  local h = 1 + 0.1*math.sin(_t)
+	  local r = _t*0.1*math.pi
+
+	  love.graphics.draw(canvas, x, y, r, w, h, DEFAULT_W/2, DEFAULT_H/2)
+
+	love.graphics.pop()
 end
