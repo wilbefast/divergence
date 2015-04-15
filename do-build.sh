@@ -1,11 +1,11 @@
 #! /bin/bash
 
-rm -rf build/0.9.1/
+rm -rf build/0.9.2/
 
 cd ./src/
 
 #love-release -lmw --osx-icon ../presskit/mac_icon.iscns --win-icon ../presskit/SH_headIcon.ico --osx-maintainer-name wilbefast -n divergence -r ../build/ . 
-love-release -lmaw \
+love-release -a \
 	--osx-maintainer-name wilbefast \
 	--apk-maintainer-name wilbefast \
 	--apk-package-name divergence \
@@ -14,13 +14,9 @@ love-release -lmaw \
 	--apk-icon ../icons/ \
 	-r ../build/ . 
 
-rm -f divergence-win32.zip
-rm -f divergence-win64.zip
-rm -f divergence-macosx-x64.zip
-
 cd ..
-cp README.md build/0.9.1/
-cd build/0.9.1/
+cp README.md build/0.9.2/
+cd build/0.9.2/
 
 # Add readme
 zip -g divergence-macosx-x64.zip README.md

@@ -1,0 +1,1 @@
+adb install -r build/0.9.2/love_android_sdl2-debug.apk

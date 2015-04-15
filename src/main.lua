@@ -179,7 +179,7 @@ function love.draw()
 	  local y = math.sin(_t * math.pi*2)*8
 	  local w = 1 + 0.1*math.cos(_t)
 	  local h = 1 + 0.1*math.sin(_t)
-	  local r = _t*0.1*math.pi
+	  local r = 0--_t*0.1*math.pi
 
 	  love.graphics.draw(canvas, x, y, r, w, h, DEFAULT_W/2, DEFAULT_H/2)
 
