@@ -45,6 +45,9 @@ local Player = Class
   next_universe = 1,
 
   init = function(self, x, y, dx, dy)
+
+  	print(debug.traceback())
+
     GameObject.init(self, x, y, 32, 32)
 
     self.startX = x

@@ -32,6 +32,10 @@ function input:update(dt)
   if love.keyboard.isDown("down", "s") then 
     self.y = self.y + 1 
   end
+
+  local gx, gy = gesture.direction()
+  self.x = self.x + gx
+  self.y = self.y + gy
 end
 
 

@@ -40,6 +40,11 @@ end
 function state:leave()
 end
 
+function state:mousepressed(x, y, button)
+	if button == "l" then
+		GameState.switch(game)
+	end
+end
 
 function state:keypressed(key, uni)
   

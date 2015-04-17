@@ -20,10 +20,12 @@ GameState = require("hump/gamestate")
 Class = require("hump/class")
 Camera = require("hump/camera")
 
+log = require("unrequited/log")
 useful = require("unrequited/useful")
 audio = require("unrequited/audio")
 input = require("unrequited/input")
 babysitter = require("unrequited/babysitter")
+gesture = require("unrequited/gesture")
 GameObject = require("unrequited/GameObject")
 Tile = require("unrequited/Tile")
 CollisionGrid = require("unrequited/CollisionGrid")
@@ -152,6 +154,20 @@ function keyreleased(key, uni)
   GameState.keyreleased(key)
 end
 
+function love.mousepressed(x, y, button)
+	if button == "l" then
+		gesture.touch(x, y)
+	end
+	GameState.mousepressed(x, y, button)
+end
+
+function love.mousereleased(x, y, button)
+	if button == "l" then
+		gesture.release(x, y)
+	end
+	GameState.mousereleased(x, y, button)
+end
+
 MIN_DT = 1/60
 MAX_DT = 1/30
 
@@ -163,6 +179,7 @@ function love.update(dt)
   input:update(dt)
   GameState.update(dt)
   babysitter.update(dt)
+  gesture.update(dt)
 end
 
 local _t = 0
@@ -187,4 +204,8 @@ function love.draw()
 	  love.graphics.draw(canvas, x, y, r, w, h, DEFAULT_W/2, DEFAULT_H/2)
 
 	love.graphics.pop()
+
+	if DEBUG then
+		log:draw(32, 32)
+	end
 end
