@@ -29,33 +29,37 @@ function state:reloadLevel()
 end
 
 function state:init()
-  self.level_number = 1
-  self:reloadLevel()
 end
 
 function state:enter()
-  
+  self.level_number = 1
+  self:reloadLevel() 
 end
 
 
 function state:leave()
 end
 
+function state:next()
+  if self.level.gameOver then
+    self:reloadLevel()
+  elseif self.level.start then
+    self.level.start = false
+    
+  elseif self.level.victory then
+    self.level_number = self.level_number + 1
+    if self.level_number >= 4 then
+      GameState.switch(title)
+    else
+    	self:reloadLevel()
+    end
+    sound_change:play()
+  end
+end
+
 function state:mousepressed(x, y, button)
 	if button == "l" then
-    if self.level.gameOver then
-      self:reloadLevel()
-    elseif self.level.start then
-      self.level.start = false
-      
-    elseif self.level.victory then
-      self.level_number = self.level_number + 1
-      if self.level_number >= 5 then
-        self.level_number = 1
-      end
-      sound_change:play()
-      self:reloadLevel()
-    end
+		self:next()
  	end
 end
 
@@ -66,19 +70,7 @@ function state:keypressed(key, uni)
   if key=="escape" then
     GameState.switch(title)
   else
-    if self.level.gameOver then
-      self:reloadLevel()
-    elseif self.level.start then
-      self.level.start = false
-      
-    elseif self.level.victory then
-      self.level_number = self.level_number + 1
-      if self.level_number >= 5 then
-        self.level_number = 1
-      end
-      sound_change:play()
-      self:reloadLevel()
-    end
+  	self:next()
   end
 end
 

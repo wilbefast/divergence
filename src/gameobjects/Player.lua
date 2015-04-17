@@ -290,12 +290,6 @@ function Player:cloneWithDirection(dx, dy)
 		    end
 		  end
 
-		  for circuit, keys in ipairs(self.required_keys) do
-		    for key_i, key in ipairs(keys) do
-		    	print(circuit, key_i, key)
-		    end
-		  end
-
       -- copy across required plates
       --useful.copyContents(self.required_plates, 
       --    clone.required_plates)
