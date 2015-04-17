@@ -23,6 +23,7 @@ Camera = require("hump/camera")
 useful = require("unrequited/useful")
 audio = require("unrequited/audio")
 input = require("unrequited/input")
+babysitter = require("unrequited/babysitter")
 GameObject = require("unrequited/GameObject")
 Tile = require("unrequited/Tile")
 CollisionGrid = require("unrequited/CollisionGrid")
@@ -57,6 +58,8 @@ VIEW_SCALE = 0
 VIEW_W = 0
 VIEW_H = 0
 
+MUSIC_BASE_VOLUME = 0.8
+
 -- constants
 ALL_UNIVERSES = 0
 CREATE_CLONES = true
@@ -79,18 +82,11 @@ end
 LOVE CALLBACKS
 --]]------------------------------------------------------------
 
-function love.conf(t)
-  t.title = "Divergence" 
-  t.author = "William J. Dyce"
-  t.url = "http://wilbefast.com" 
-end
-
-
 IMG_MAN = love.graphics.newImage("assets/images/man.png")
 
-local MUSIC = love.audio.newSource("assets/audio/music.ogg")
+MUSIC = love.audio.newSource("assets/audio/music.ogg")
   MUSIC:setLooping(true)
-  MUSIC:setVolume(0.8)
+  MUSIC:setVolume(MUSIC_BASE_VOLUME)
   MUSIC_LENGTH = love.sound.newSoundData(
   	"assets/audio/music.ogg"):getDuration()
 
@@ -128,7 +124,13 @@ function love.load(arg)
   love.window.setIcon(IMG_MAN:getData())  
   
   -- go to the initial gamestate
-  GameState.switch(game)
+  GameState.switch(title)
+
+  -- font
+	FONT_HUGE = love.graphics.newFont("assets/ttf/Romulus_by_pix3m.ttf", 64)
+	FONT_MEDIUM = love.graphics.newFont("assets/ttf/Romulus_by_pix3m.ttf", 32)
+	love.graphics.setFont(FONT_MEDIUM)
+
 
   -- start the music !
   MUSIC:play()
@@ -160,6 +162,7 @@ function love.update(dt)
   
   input:update(dt)
   GameState.update(dt)
+  babysitter.update(dt)
 end
 
 local _t = 0
@@ -173,7 +176,7 @@ function love.draw()
   love.graphics.translate(WINDOW_W/2, WINDOW_H/2)
   love.graphics.scale(VIEW_SCALE, VIEW_SCALE)
 
-	  local _t = 200*MUSIC:tell()/MUSIC_LENGTH
+	  local _t = 60*MUSIC:tell()/MUSIC_LENGTH*math.pi
 
 	  local x = math.cos(_t * math.pi*2)*8
 	  local y = math.sin(_t * math.pi*2)*8

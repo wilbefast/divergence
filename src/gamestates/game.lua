@@ -46,7 +46,7 @@ function state:keypressed(key, uni)
   
   -- quit game
   if key=="escape" then
-    love.event.push("quit")
+    GameState.switch(title)
   else
     if self.level.gameOver then
       self:reloadLevel()

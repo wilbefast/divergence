@@ -23,7 +23,17 @@ function state:init()
 end
 
 function state:enter()
-  love.graphics.setFont(love.graphics.newFont(32))
+	_visibility = 0
+
+	babysitter.add(coroutine.create(function(dt)
+   	local t = 0
+   	while t < 1 do
+   		t = math.min(1, t + dt*2)
+   		MUSIC:setVolume(math.max(MUSIC:getVolume()), t*MUSIC_BASE_VOLUME)
+   		_visibility = t
+   		coroutine.yield()
+   	end
+ 	end))
 end
 
 
@@ -35,8 +45,18 @@ function state:keypressed(key, uni)
   
   -- quit game
   if key=="escape" then
-    love.event.push("quit")
-    
+		if not babysitter.isBusy() then
+			babysitter.add(coroutine.create(function(dt)
+		   	local t = 0
+		   	while t < 1 do
+		   		t = t + dt*2
+		   		MUSIC:setVolume((1 - t)*MUSIC_BASE_VOLUME)
+		   		_visibility = (1 - t)
+		   		coroutine.yield()
+		   	end
+		   	love.event.push("quit")
+		 	end))
+		end
   elseif key=="return" then
     GameState.switch(game)
   end
@@ -44,10 +64,55 @@ function state:keypressed(key, uni)
 end
 
 function state:update(dt)
+	
 end
 
 
 function state:draw()
+
+	local _t = 100*MUSIC:tell()/MUSIC_LENGTH*math.pi
+
+	love.graphics.push()
+
+		love.graphics.setColor(0, 255, 255, 255*_visibility)
+
+		love.graphics.translate(DEFAULT_W*0.5, DEFAULT_H*0.5)
+
+		love.graphics.rotate(_t)
+		love.graphics.setLineWidth(8)
+		love.graphics.rectangle("line",
+			-DEFAULT_W*0.25*_visibility,
+			-DEFAULT_H*0.25*_visibility,
+			DEFAULT_W*0.5*_visibility,
+			DEFAULT_H*0.5*_visibility)
+		love.graphics.setLineWidth(1)
+
+
+
+		love.graphics.setColor(255, 255, 255, 255*_visibility)
+	love.graphics.pop()
+
+	love.graphics.setFont(FONT_HUGE)
+	love.graphics.printf(
+		"DIVERGENCE", 
+		DEFAULT_W*0.15, 
+		DEFAULT_H*0.2, 
+		DEFAULT_W*0.75, 
+		"center")
+
+	love.graphics.setFont(FONT_MEDIUM)
+	love.graphics.printf(
+		"@wilbefast", 
+		DEFAULT_W*0.15, 
+		DEFAULT_H*0.6, 
+		DEFAULT_W*0.75, 
+		"center")
+	love.graphics.printf(
+		"George Abitbol", 
+		DEFAULT_W*0.15, 
+		DEFAULT_H*0.75, 
+		DEFAULT_W*0.75, 
+		"center")
 end
 
 
