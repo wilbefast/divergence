@@ -81,6 +81,12 @@ function Key:draw()
   
   -- default
   GameObject.draw(self)
+
+  if DEBUG then
+  	if not self:indexForPlayer(Player.real) then
+	  	love.graphics.circle("fill", self.x, self.y, 16)
+	  end
+  end
 end
 
 --[[------------------------------------------------------------

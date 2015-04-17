@@ -63,6 +63,11 @@ local Player = Class
       SpecialEffect(self.x, self.y, drawAppear)
     end
     self.universe = Player.next_universe
+
+    if self.universe == 1 then
+    	Player.real = self
+    end
+
     self.boxes = {} 
     self.required_keys = {}
     Player.next_universe = Player.next_universe + 1
@@ -90,7 +95,6 @@ function Player:initInLevel(level)
   for i = 1, 3 do 
     self.required_keys[i] = GameObject.getSuchThat(
       function(key) return (key.circuit == i) end, "Key")
-    
   end
   
   -- how many pressure-plates are there to press?
@@ -279,9 +283,19 @@ function Player:cloneWithDirection(dx, dy)
       end
       
       -- copy across required keys
-      useful.copyContents(self.required_keys, 
-          clone.required_keys)
-      
+      for circuit_i = 1, 3 do
+      	clone.required_keys[circuit_i] = {}
+		    for key_i, key in ipairs(self.required_keys[circuit_i]) do
+		    	clone.required_keys[circuit_i][key_i] = key
+		    end
+		  end
+
+		  for circuit, keys in ipairs(self.required_keys) do
+		    for key_i, key in ipairs(keys) do
+		    	print(circuit, key_i, key)
+		    end
+		  end
+
       -- copy across required plates
       --useful.copyContents(self.required_plates, 
       --    clone.required_plates)

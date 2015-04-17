@@ -54,7 +54,6 @@ function state:keypressed(key, uni)
   end
   -- quit game
   if key=="escape" then
-		do_distort = false
 		babysitter.add(coroutine.create(function(dt)
 	   	local t = 0
 	   	while t < 1 do
