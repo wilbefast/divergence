@@ -171,8 +171,16 @@ end
 MIN_DT = 1/60
 MAX_DT = 1/30
 
+local _distortion = 1
+do_distort = true
 
 function love.update(dt)
+
+	if do_distort then
+		_distortion = math.min(1, _distortion + 4*dt)
+	else
+		_distortion = math.max(0, _distortion - 4*dt)
+	end
 
   dt = useful.clamp(dt, MIN_DT, MAX_DT)
   
@@ -182,7 +190,6 @@ function love.update(dt)
   gesture.update(dt)
 end
 
-local _t = 0
 function love.draw()
 	canvas:clear()
 	love.graphics.setCanvas(canvas)
@@ -193,13 +200,13 @@ function love.draw()
   love.graphics.translate(WINDOW_W/2, WINDOW_H/2)
   love.graphics.scale(VIEW_SCALE, VIEW_SCALE)
 
-	  local _t = 60*MUSIC:tell()/MUSIC_LENGTH*math.pi
+	  local t = 80*MUSIC:tell()/MUSIC_LENGTH*math.pi
 
-	  local x = math.cos(_t * math.pi*2)*8
-	  local y = math.sin(_t * math.pi*2)*8
-	  local w = 1 + 0.1*math.cos(_t)
-	  local h = 1 + 0.1*math.sin(_t)
-	  local r = 0--_t*0.1*math.pi
+	  local x = math.cos(0.1*t * math.pi*2)*64*_distortion
+	  local y = math.cos(t * math.pi*2)*8*_distortion
+	  local w = 1 + 0.1*math.cos(t)*_distortion
+	  local h = 1 + 0.1*math.sin(t)*_distortion
+	  local r = math.pi*0.05*math.sin(t*0.2*math.pi)*_distortion
 
 	  love.graphics.draw(canvas, x, y, r, w, h, DEFAULT_W/2, DEFAULT_H/2)
 

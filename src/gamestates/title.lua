@@ -24,6 +24,7 @@ end
 
 function state:enter()
 	_visibility = 0
+	do_distort = true
 
 	babysitter.add(coroutine.create(function(dt)
    	local t = 0
@@ -48,20 +49,22 @@ end
 
 function state:keypressed(key, uni)
   
+  if babysitter.isBusy() then
+  	return
+  end
   -- quit game
   if key=="escape" then
-		if not babysitter.isBusy() then
-			babysitter.add(coroutine.create(function(dt)
-		   	local t = 0
-		   	while t < 1 do
-		   		t = t + dt*2
-		   		MUSIC:setVolume((1 - t)*MUSIC_BASE_VOLUME)
-		   		_visibility = (1 - t)
-		   		coroutine.yield()
-		   	end
-		   	love.event.push("quit")
-		 	end))
-		end
+		do_distort = false
+		babysitter.add(coroutine.create(function(dt)
+	   	local t = 0
+	   	while t < 1 do
+	   		t = t + dt*2
+	   		MUSIC:setVolume((1 - t)*MUSIC_BASE_VOLUME)
+	   		_visibility = (1 - t)
+	   		coroutine.yield()
+	   	end
+	   	love.event.push("quit")
+	 	end))
   elseif key=="return" then
     GameState.switch(game)
   end

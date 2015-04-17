@@ -84,6 +84,8 @@ end
 
 function state:update(dt)
   self.level:update(dt)
+
+  do_distort = ((not self.level.victory) and (not self.level.gameOver))
 end
 
 
