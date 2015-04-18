@@ -45,10 +45,12 @@ function state:next()
     self:reloadLevel()
   elseif self.level.start then
     self.level.start = false
+  	sound_fail:stop()
+		sound_victory:stop()
     
   elseif self.level.victory then
     self.level_number = self.level_number + 1
-    if self.level_number >= 4 then
+    if self.level_number >= 5 then
       GameState.switch(title)
     else
     	self:reloadLevel()
@@ -77,7 +79,10 @@ end
 function state:update(dt)
   self.level:update(dt)
 
-  do_distort = ((not self.level.victory) and (not self.level.gameOver))
+  do_distort = (
+  	(not self.level.start) and 
+  	(not self.level.victory) and 
+  	(not self.level.gameOver))
 end
 
 

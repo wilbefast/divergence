@@ -30,21 +30,6 @@ GameObject = require("unrequited/GameObject")
 Tile = require("unrequited/Tile")
 CollisionGrid = require("unrequited/CollisionGrid")
 
-Box = require("gameobjects/Box")
-Key = require("gameobjects/Key")
-PressurePlate = require("gameobjects/PressurePlate")
-Door = require("gameobjects/Door")
-Exit = require("gameobjects/Exit")
-SpecialEffect = require("gameobjects/SpecialEffect")
-Monster = require("gameobjects/Monster")
-Player = require("gameobjects/Player")
-
-Level = require("Level")
-
-title = require("gamestates/title")
-game = require("gamestates/game")
-
-
 --[[------------------------------------------------------------
 GLOBAL SETTINGS
 --]]------------------------------------------------------------
@@ -84,14 +69,6 @@ end
 LOVE CALLBACKS
 --]]------------------------------------------------------------
 
-IMG_MAN = love.graphics.newImage("assets/images/man.png")
-
-MUSIC = love.audio.newSource("assets/audio/music.ogg")
-  MUSIC:setLooping(true)
-  MUSIC:setVolume(MUSIC_BASE_VOLUME)
-  MUSIC_LENGTH = love.sound.newSoundData(
-  	"assets/audio/music.ogg"):getDuration()
-
 function love.load(arg)
 	-- resolution
 	WINDOW_W, WINDOW_H = love.graphics.getWidth(), love.graphics.getHeight()
@@ -123,19 +100,45 @@ function love.load(arg)
   love.window.setTitle("Divergence")
   
   -- window icon
+  IMG_MAN = love.graphics.newImage("assets/images/man.png")
   love.window.setIcon(IMG_MAN:getData())  
-  
-  -- go to the initial gamestate
-  GameState.switch(title)
 
   -- font
 	FONT_HUGE = love.graphics.newFont("assets/ttf/Romulus_by_pix3m.ttf", 64)
 	FONT_MEDIUM = love.graphics.newFont("assets/ttf/Romulus_by_pix3m.ttf", 32)
 	love.graphics.setFont(FONT_MEDIUM)
 
+	-- load sound and music
+	MUSIC = love.audio.newSource("assets/audio/music.ogg")
+	  MUSIC:setLooping(true)
+	  MUSIC:setVolume(MUSIC_BASE_VOLUME)
+	  MUSIC_LENGTH = love.sound.newSoundData(
+	  	"assets/audio/music.ogg"):getDuration()
+	sound_fail = love.audio.newSource("assets/audio/fail.ogg", "static")
+	sound_fail:setVolume(0.5)
+	sound_victory = love.audio.newSource("assets/audio/positive.ogg", "static")
+	sound_victory:setVolume(0.5)
 
   -- start the music !
   MUSIC:play()
+
+  -- gameplay includes
+	Box = require("gameobjects/Box")
+	Key = require("gameobjects/Key")
+	PressurePlate = require("gameobjects/PressurePlate")
+	Door = require("gameobjects/Door")
+	Exit = require("gameobjects/Exit")
+	SpecialEffect = require("gameobjects/SpecialEffect")
+	Monster = require("gameobjects/Monster")
+	Player = require("gameobjects/Player")
+
+	Level = require("Level")
+
+	title = require("gamestates/title")
+	game = require("gamestates/game") 
+
+  -- go to the initial gamestate
+  GameState.switch(title) 
 end
 
 function love.focus(f)
@@ -174,13 +177,21 @@ MAX_DT = 1/30
 local _distortion = 1
 do_distort = true
 
+local _t = 0
+
 function love.update(dt)
+
+	_t = _t + dt
+	if _t > 1000 then
+		_t = _t - 1000
+	end
 
 	if do_distort then
 		_distortion = math.min(1, _distortion + 4*dt)
 	else
 		_distortion = math.max(0, _distortion - 4*dt)
 	end
+	MUSIC:setVolume(_distortion * MUSIC_BASE_VOLUME)
 
   dt = useful.clamp(dt, MIN_DT, MAX_DT)
   
@@ -200,10 +211,10 @@ function love.draw()
   love.graphics.translate(WINDOW_W/2, WINDOW_H/2)
   love.graphics.scale(VIEW_SCALE, VIEW_SCALE)
 
-	  local t = 80*MUSIC:tell()/MUSIC_LENGTH*math.pi
+	  local t = _t
 
 	  local x = math.cos(0.1*t * math.pi*2)*64*_distortion
-	  local y = math.cos(t * math.pi*2)*8*_distortion
+	  local y = math.cos(2 * t * math.pi*2)*8*_distortion
 	  local w = 1 + 0.1*math.cos(t)*_distortion
 	  local h = 1 + 0.1*math.sin(t)*_distortion
 	  local r = math.pi*0.05*math.sin(t*0.2*math.pi)*_distortion

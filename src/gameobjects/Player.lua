@@ -20,10 +20,7 @@ PLAYER GAMEOBJECT
 Resources
 --]]--
 
-audio:load_sound("fail", 2)
-local sound_victory = love.audio.newSource("assets/audio/positive.wav", "static")
-audio:load_sound("button_rise", 1)
-
+audio:load_sounds("Move", 7, 0.25, 2)
 --[[------------------------------------------------------------
 Initialisation
 --]]--
@@ -358,7 +355,7 @@ function Player:die(level)
     self.purge = true
   else
     -- game over!
-    audio:play_sound("fail")
+    sound_fail:play()
     level.gameOver = true
     -- jump back to start
     self.targetX, self.targetY = self.x, self.y
@@ -452,7 +449,7 @@ function Player:update(dt, level, view)
 
       -- make a sound
       if (self.universe == 1) then
-        audio:play_sound("button_rise", 0.1)
+        audio:play_sound("Move", 0.1)
       end
 
       self.new = false
