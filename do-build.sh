@@ -5,7 +5,8 @@ rm -rf build/0.9.2/
 cd ./src/
 
 #love-release -lmw --osx-icon ../presskit/mac_icon.iscns --win-icon ../presskit/SH_headIcon.ico --osx-maintainer-name wilbefast -n divergence -r ../build/ . 
-love-release -a \
+love-release -lmw
+a \
 	--osx-maintainer-name wilbefast \
 	--apk-maintainer-name wilbefast \
 	--apk-package-name divergence \
